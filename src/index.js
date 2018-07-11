@@ -12,9 +12,6 @@ import MobileToolbar from './components/MobileToolbar/index';
 import './fonts/fonts.css'
 import './app.css'
 
-import { Button } from 'antd';
-
-
 
 let { store, persistor } = configureStore()
 
@@ -23,7 +20,6 @@ const App = () => (
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
         <div className="main-container">
-          <Button type="primary">Button</Button>
           <Header />
           <MainContainer />
           <MobileToolbar />

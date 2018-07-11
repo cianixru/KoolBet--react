@@ -6,8 +6,13 @@ const rewireLess = require('react-app-rewire-less');
   config = rewireLess.withLoaderOptions({
     javascriptEnabled: true,
     modifyVars: { 
-      "@primary-color": "#f00",
-      "@link-color": "#1DA57A"
+
+      "@font-family": "'Roboto Condensed', Arial, sans-serif",
+      "@primary-color": "#ffbf00",
+      "@btn-primary-color": "#000",
+
+      "@menu-dark-color": "#fff",
+      "@menu-dark-bg": "#393b50"
    },
   })(config, env);
     return config;
