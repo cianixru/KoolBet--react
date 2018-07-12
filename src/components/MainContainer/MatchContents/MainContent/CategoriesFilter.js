@@ -29,8 +29,6 @@ class CategoriesFilter extends Component {
         }
     }
 
-
-
     render() {
         let marketGroups = ['Main', 'Main Ext', 'HT/FT', 'Total goals', 'Handicap', 'Exact goals', 'Correct score', '1st H', '1H Total', '1H Score', '1H C. Score', '1H Combo', '1H DC Combo', '2nd H', '2H Total', '2H Score', '2H Combo', 'HT', 'HT Halves', 'AT', 'AT Halves', 'BT Goals', 'Combo', 'Combo BT', '2H DC Combo', 'NB', 'DC', 'DC Combo', 'DC / BT Score', 'O / E', 'Corners', '1H Corners', 'Tot. Corners', 'Special']
         return (
@@ -71,7 +69,7 @@ class CategoriesFilter extends Component {
                 </Collapse>
 
                 <div className="btn-toggle-hide__container">
-                    <div className={"btn-toggle-hide " + (this.state.open ? "" : "arr-up")}
+                    <div className={"btn-toggle-hide collapse-tournaments" + (this.state.open ? "" : "arr-up ")}
                         id="colps2"
                         title="Show/Hide"
                         onClick={e => this.handleClick(e, 0)}>
