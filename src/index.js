@@ -11,6 +11,7 @@ import MobileToolbar from './components/MobileToolbar/index';
 
 import './fonts/fonts.css'
 import './app.css'
+import Theme from "./Theme"
 
 
 let { store, persistor } = configureStore()
@@ -19,11 +20,13 @@ const App = () => (
 
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
+      <Theme>
         <div className="main-container">
           <Header />
           <MainContainer />
           <MobileToolbar />
         </div>
+      </Theme>
     </PersistGate>
   </Provider>
 );

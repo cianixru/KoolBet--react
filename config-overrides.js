@@ -2,17 +2,17 @@ const { injectBabelPlugin } = require('react-app-rewired');
 const rewireLess = require('react-app-rewire-less');
 
   module.exports = function override(config, env) {
-  config = injectBabelPlugin(['import', { libraryName: 'antd', style: true }], config);  // change importing css to less
+  config = injectBabelPlugin(['import', { libraryName: 'antd',
+   //style: "true"
+  }], config);
   config = rewireLess.withLoaderOptions({
     javascriptEnabled: true,
     modifyVars: { 
-
       "@font-family": "'Roboto Condensed', Arial, sans-serif",
       "@primary-color": "#ffbf00",
       "@btn-primary-color": "#000",
-
       "@menu-dark-color": "#fff",
-      "@menu-dark-bg": "#393b50"
+      "@menu-dark-bg": "#393b50",
    },
   })(config, env);
     return config;
