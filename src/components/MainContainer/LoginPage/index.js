@@ -7,31 +7,31 @@ export default class LoginPage extends React.Component {
         const { classes } = this.props;
         return (
             <div>
-                <div class="registration__wrapper">
-                    <div class="registration-form">
+                <div className="registration__wrapper">
+                    <div className="registration-form">
                         <h3>
                             Sign in to your account
                         </h3>
 
                         <ul>
                             <li>
-                                <div class="input-container">
-                                    <div class="inputSection">
-                                        <input class="" type="text" placeholder="Username" />
+                                <div className="input-container">
+                                    <div className="inputSection">
+                                        <input className="" type="text" placeholder="Username" />
                                     </div>
-                                    <div class="inputSection">
-                                        <input class="" type="password" placeholder="Password" />
+                                    <div className="inputSection">
+                                        <input className="" type="password" placeholder="Password" />
                                     </div>
                                 </div>
                             </li>
                             <li>
-                                <div class="grid-container--nowrap checkbox__blk space-between">
-                                    <div class="a">
+                                <div className="grid-container--nowrap checkbox__blk space-between">
+                                    <div className="a">
                                         <input id="acceptTerms" type="checkbox" />
                                         <label for="acceptTerms">Remember me</label>
                                     </div>
 
-                                    <div class="a nw f-password">
+                                    <div className="a nw f-password">
                                         <a href="#">
                                             Forgot Password?
                                             </a>
@@ -39,14 +39,14 @@ export default class LoginPage extends React.Component {
                                 </div>
                             </li>
 
-                            <li class="submit-area">
-                                <input type="button" value="LOGIN" id="SubmitForm" class="open-account-button" />
+                            <li className="submit-area">
+                                <input type="button" value="LOGIN" id="SubmitForm" className="open-account-button" />
                             </li>
-                            <li class="social-registration">
-                                <div class="horizontal-separator-container short-separator">
-                                    <span class="horizontal-separator">or</span>
+                            <li className="social-registration">
+                                <div className="horizontal-separator-container short-separator">
+                                    <span className="horizontal-separator">or</span>
                                 </div>
-                                <div id="SubmitForm" class="open-account-button-facebook"><i class="facebook__icon"></i>Login with Facebook</div>
+                                <div id="SubmitForm" className="open-account-button-facebook"><i className="facebook__icon"></i>Login with Facebook</div>
                             </li>
                         </ul>
 

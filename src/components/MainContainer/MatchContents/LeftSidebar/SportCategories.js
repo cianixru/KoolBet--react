@@ -11,7 +11,7 @@ class SportCategories extends React.Component {
             open:
                 (!this.state.open.includes(index))
                     ? [...prevState.open, index]
-                    : [...prevState.open.filter(i => i != index)]
+                    : [...prevState.open.filter(i => i !== index)]
         }));
     };
 

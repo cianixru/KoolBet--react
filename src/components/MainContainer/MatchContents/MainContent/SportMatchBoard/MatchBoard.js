@@ -9,10 +9,10 @@ class MatchBoard extends React.Component {
             this.onMatchRemove('LIVE', val)
         }
         else {
-            if (this.props.state.currentPage == 0) {
+            if (this.props.state.currentPage === 0) {
                 this.onMatchAdd('PRE', val)
             } else
-                if (this.props.state.currentPage == 1) {
+                if (this.props.state.currentPage === 1) {
                     this.onMatchAdd('LIVE', val)
                 }
         }
@@ -31,10 +31,10 @@ class MatchBoard extends React.Component {
 
         let currBoard;
 
-        if (this.props.state.currentPage == 0) {
+        if (this.props.state.currentPage === 0) {
             currBoard = this.props.state.tableMatches.prematch
         }
-        if (this.props.state.currentPage == 1) {
+        if (this.props.state.currentPage === 1) {
             currBoard = this.props.state.tableMatches.live
         }
 
@@ -61,7 +61,6 @@ class MatchBoard extends React.Component {
                                     })}
                                 </div>
                             )
-
                         }
                     })}
                 </ul>

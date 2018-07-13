@@ -15,7 +15,7 @@ class ChangePeriod extends React.Component {
 
     render() {
         return (
-            <div class="change-period__container">
+            <div className="change-period__container">
                 <Select defaultValue="all_events" prefixCls="custom-selectbox" onChange={handleChange}>
                     <Option value="all_events">All events</Option>
                     <Option value="last_minute">Last minute</Option>

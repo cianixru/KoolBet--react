@@ -6,32 +6,32 @@ import BSForm from './BSForm';
 class BSArea extends Component {
     render() {
         return (
-            <div class="betslip-area__container">
-                <div class="betslip-area__inner">
-                    <div class="bs__header">
-                        <div class="bs__title">Betslip</div>
-                        <div class="left-col">
-                            <div class="bs-type-switcher hide">
-                                <button class="select-size-1" data-toggle="changeBsType">Single</button>
-                                <ul class="select-size-1__container dropdown-pane bottom" id="changeBsType" data-dropdown data-close-on-click="true" data-v-offset="0">
-                                    <li class="select__item active">Single</li>
-                                    <li class="select__item">Multiple</li>
-                                    <li class="select__item">System</li>
+            <div className="betslip-area__container">
+                <div className="betslip-area__inner">
+                    <div className="bs__header">
+                        <div className="bs__title">Betslip</div>
+                        <div className="left-col">
+                            <div className="bs-type-switcher hide">
+                                <button className="select-size-1" data-toggle="changeBsType">Single</button>
+                                <ul className="select-size-1__container dropdown-pane bottom" id="changeBsType" data-dropdown data-close-on-click="true" data-v-offset="0">
+                                    <li className="select__item active">Single</li>
+                                    <li className="select__item">Multiple</li>
+                                    <li className="select__item">System</li>
                                 </ul>
                             </div>
-                            <i class="bs-hide" data-toggle="betslipArea"></i>
+                            <i className="bs-hide" data-toggle="betslipArea"></i>
                         </div>
                     </div>
 
-                    <div class="bs-tabs">
+                    <div className="bs-tabs">
                         <ul>
-                            <li class="bs-tabs__item">Single</li>
-                            <li class="bs-tabs__item">Multiple</li>
-                            <li class="bs-tabs__item active">System</li>
+                            <li className="bs-tabs__item">Single</li>
+                            <li className="bs-tabs__item">Multiple</li>
+                            <li className="bs-tabs__item active">System</li>
                         </ul>
                     </div>
 
-                    <div class="bs-checkboxes">
+                    <div className="bs-checkboxes">
                         <input id="box1" type="checkbox" checked />
                         <label htmlFor="box1">Advanced</label>
                         <input id="box2" type="checkbox" />

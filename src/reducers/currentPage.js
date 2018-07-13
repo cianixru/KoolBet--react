@@ -3,7 +3,7 @@ let initialState = [0];
 export default function bsTabs(state=initialState, action) {
     
     switch(action.type){
-        case('CP_TAB_CHANGE'):
+        case('PAGE_CHANGE'):
             return action.payload;
         break;
 
