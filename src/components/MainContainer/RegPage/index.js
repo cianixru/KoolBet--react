@@ -1,34 +1,131 @@
 import React from 'react';
 // import { connect } from "react-redux";
+import { Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd';
+
+
+import './style.css';
+
+const FormItem = Form.Item;
+const Option = Select.Option;
+
 
 class RegPage extends React.Component {
+    state = {
+        confirmDirty: false,
+        autoCompleteResult: [],
+    };
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFieldsAndScroll((err, values) => {
+            if (!err) {
+                console.log('Received values of form: ', values);
+            }
+        });
+    }
+
+    handleConfirmBlur = (e) => {
+        const value = e.target.value;
+        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+    }
+    compareToFirstPassword = (rule, value, callback) => {
+        const form = this.props.form;
+        if (value && value !== form.getFieldValue('password')) {
+            callback('Two passwords that you enter is inconsistent!');
+        } else {
+            callback();
+        }
+    }
+    validateToNextPassword = (rule, value, callback) => {
+        const form = this.props.form;
+        if (value && this.state.confirmDirty) {
+            form.validateFields(['confirm'], { force: true });
+        }
+        callback();
+    }
+    validateBirthday = (rule, value, callback) => {
+        const year = new Date().getFullYear();
+        if (value && value >= (year - 18)) {
+            callback('Registration allowed only over 18 years of age');
+        }
+        callback();
+    }
+
 
     render() {
-        const { classes } = this.props;
+        const { getFieldDecorator } = this.props.form;
+
         return (
-            <div>
+            <Form onSubmit={this.handleSubmit} prefixCls="login-form" >
                 <div className="registration__wrapper">
                     <div className="registration-form">
                         <h3>Registration</h3>
                         <ul>
                             <li>
                                 <div className="input-container">
+
                                     <div className="labelContainer">
                                         <label>Login details</label>
                                         <label className="requiredAsterix">*</label>
                                     </div>
+
+                                    <FormItem prefixCls="inputSection"
+
+                                    >
+                                        {getFieldDecorator('email', {
+                                            rules: [{
+                                                type: 'email', message: 'The input is not valid E-mail!',
+                                            }, {
+                                                required: true, message: 'Please input your E-mail!',
+                                            }],
+                                        })(
+                                            <Input placeholder="Your email address" />
+                                        )}
+                                    </FormItem>
+
+
+                                    <FormItem prefixCls="inputSection">
+                                        {getFieldDecorator('nickname', {
+                                            rules: [{ required: true, message: 'Please input your username!', whitespace: true }],
+                                        })(
+                                            <Input placeholder="Your username" />
+                                        )}
+                                    </FormItem>
+
+
+
                                     <div className="inputSection">
-                                        <input className="" type="text" placeholder="Your email address" />
-                                    </div>
-                                    <div className="inputSection">
-                                        <input className="" type="text" placeholder="Your username" />
-                                    </div>
-                                    <div className="control-group">
-                                        <div className="inputSection dub">
-                                            <input className="" type="password" placeholder="Choose a password" />
-                                        </div>
-                                        <div className="inputSection dub">
-                                            <input className="" type="password" placeholder="Confirm password" />
+                                        <div className="control-group">
+                                            <div className="inputSection dub">
+
+                                                <FormItem prefixCls="inputSection">
+                                                    {getFieldDecorator('password', {
+                                                        rules: [{
+                                                            required: true,
+                                                            message: 'Please input your password!',
+                                                        }, {
+                                                            validator: this.validateToNextPassword,
+                                                        }],
+                                                    })(
+                                                        <Input type="password" placeholder="Choose a password" />
+                                                    )}
+                                                </FormItem>
+
+                                            </div>
+                                            <div className="inputSection dub">
+                                                <FormItem prefixCls="inputSection"
+                                                >
+                                                    {getFieldDecorator('confirm', {
+                                                        rules: [{
+                                                            required: true, message: 'Confirm your password!',
+                                                        }, {
+                                                            validator: this.compareToFirstPassword,
+                                                        }],
+                                                    })(
+                                                        <Input type="password" onBlur={this.handleConfirmBlur} placeholder="Confirm password" />
+                                                    )}
+                                                </FormItem>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -45,22 +142,16 @@ class RegPage extends React.Component {
                                                 <option value="+1">+1</option>
                                                 <option value="+20">+20</option>
                                                 <option value="+212">+212</option>
-                                                <option value="+213">+213</option>
-                                                <option value="+216">+216</option>
-                                                <option value="+218">+218</option>
-                                                <option value="+220">+220</option>
-                                                <option value="+221">+221</option>
-                                                <option value="+222">+222</option>
-                                                <option value="+223">+223</option>
-                                                <option value="+224">+224</option>
-                                                <option value="+225">+225</option>
-                                                <option value="+226">+226</option>
-                                                <option value="+227">+227</option>
-                                                <option value="+228">+228</option>
                                             </select>
                                         </div>
                                         <div className="inputSection">
-                                            <input className="" type="text" placeholder="(012)345-67-89" />
+                                            <FormItem prefixCls="inputSection">
+                                                {getFieldDecorator('phoneNumber', {
+                                                    rules: [{ required: true, message: 'Please input your phone number!' }],
+                                                })(
+                                                    <input type="text" placeholder="(012)345-67-89" />
+                                                )}
+                                            </FormItem>
                                         </div>
                                     </div>
                                 </div>
@@ -72,14 +163,39 @@ class RegPage extends React.Component {
                                         <label className="requiredAsterix">*</label>
                                     </div>
                                     <div className="inputSection">
-                                        <input className="" type="text" placeholder="First Name" />
+                                        <FormItem prefixCls="inputSection">
+                                            {getFieldDecorator('firstName', {
+                                                rules: [{ required: true, message: 'Please input your first name!' }],
+                                            })(
+                                                <input type="text" placeholder="First Name" />
+                                            )}
+                                        </FormItem>
+
                                     </div>
                                     <div className="inputSection">
-                                        <input className="" type="text" placeholder="Last Name" />
+                                    <FormItem prefixCls="inputSection">
+                                            {getFieldDecorator('lastName', {
+                                                rules: [{ required: true, message: 'Please input your last name!' }],
+                                            })(
+                                                <input type="text" placeholder="Last Name" />
+                                            )}
+                                        </FormItem>
+
                                     </div>
                                 </div>
                                 <div className="input-container">
+
+                                        <FormItem prefixCls="inputSection"
+                                                >
+                                                    {getFieldDecorator('birthday', {
+                                                        rules: [{
+                                                            required: true, message: 'Please input your birthday!'
+                                                        }, {
+                                                            validator: this.validateBirthday,
+                                                        }],
+                                                    })(
                                     <div className="control-group__birthday">
+                                                       
                                         <span className="input">
                                             <select className="control-select" name="birthday-month">
                                                 <option value="00" hidden>Day</option>
@@ -121,9 +237,12 @@ class RegPage extends React.Component {
                                             </select>
                                         </span>
                                         <span className="input">
-                                            <input type="text" className="input__control" name="birthday-year" value="" maxLength="4" placeholder="Year" autocomplete="off" />
+                                        
+                                                        <Input type="text" className="input__control" onBlur={this.handleConfirmBlur} maxLength="4" placeholder="Year" autocomplete="off" />
                                         </span>
                                     </div>
+                                                    )}
+                                                </FormItem>
                                 </div>
                             </li>
                             <li>
@@ -143,7 +262,9 @@ class RegPage extends React.Component {
                                 </div>
                             </li>
                             <li className="submit-area">
-                                <input type="button" value="Create Account" id="SubmitForm" className="open-account-button" />
+                                <Button type="primary" htmlType="submit" className="login-form-button open-account-button">
+                                    LOGIN
+                            </Button>
                             </li>
                             <li className="social-registration">
                                 <div className="horizontal-separator-container short-separator">
@@ -156,15 +277,15 @@ class RegPage extends React.Component {
 
                     </div>
                 </div>
-            </div>
-
+            </Form>
         )
     }
 }
 
-export default RegPage;
 
+const WrappedNormalLoginForm = Form.create()(RegPage);
 
+export default WrappedNormalLoginForm;
 
 
 
