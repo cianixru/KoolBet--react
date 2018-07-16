@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import SportMatchBoard from './SportMatchBoard';
 import LiveMatchBoard from './LiveMatchBoard';
+import ResultsBoard from './ResultsBoard';
 
 
 // import MatchBoard from './MatchBoard';
@@ -26,7 +27,7 @@ class MainContent extends React.Component {
                     break;
 
                 case 2:
-                    return ''
+                    return <ResultsBoard resize={setTimeout(this.reRender, 0)} />
                     break;
 
                 default:

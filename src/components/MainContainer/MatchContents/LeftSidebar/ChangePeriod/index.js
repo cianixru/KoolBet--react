@@ -9,8 +9,6 @@ function handleChange(value) {
     console.log(`selected ${value}`);
 }
 
-
-
 class ChangePeriod extends React.Component {
 
     render() {
@@ -26,8 +24,6 @@ class ChangePeriod extends React.Component {
         )
     }
 }
-
-
 
 function mapStateToProps(state) {
     return {
