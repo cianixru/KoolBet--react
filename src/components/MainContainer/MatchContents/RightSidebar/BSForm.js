@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import SystemList from './SystemList';
 
 class BSForm extends Component {
     render() {
@@ -205,148 +206,13 @@ class BSForm extends Component {
                 </div>
             </div>
 
-            <div className="systems-list">
-                <ul data-scrollbar>
-                    <li className="betslip-system__radio-item">
-                        <label className="radio-label">
-                            <input name="SystemBets" type="radio" checked value="2/3" />
-                            <span>
-                                <span className="betslip-system__radio-item-help">
-                                    <div data-toggle="modal" data-target="#systemModal" className="combinations-btn">3 bets</div>
-                                </span>
-                                <span className="betslip-system__radio-item-text">
-                                    <span>System
-                        <span className="bet-slip-menu-item-submenu-systemX">2</span>/<span className="bet-slip-menu-item-submenu-system">3</span>
-                                    </span>
-                                </span>
-                            </span>
-                        </label>
-                    </li>
-                    <li className="betslip-system__radio-item">
-                        <label className="radio-label">
-                            <input name="SystemBets" type="radio" value="2/3" />
-                            <span>
-                                <span className="betslip-system__radio-item-help">
-                                    <div data-toggle="modal" data-target="#systemModal" className="combinations-btn">3 bets</div>
-                                </span>
-                                <span className="betslip-system__radio-item-text">
-                                    <span>System
-                        <span className="bet-slip-menu-item-submenu-systemX">2</span>/<span className="bet-slip-menu-item-submenu-system">3</span>
-                                    </span>
-                                </span>
-                            </span>
-                        </label>
-                    </li>
-                    <li className="betslip-system__radio-item">
-                        <label className="radio-label">
-                            <input name="SystemBets" type="radio" value="2/3" />
-                            <span>
-                                <span className="betslip-system__radio-item-help">
-                                    <div data-toggle="modal" data-target="#systemModal" className="combinations-btn">3 bets</div>
-                                </span>
-                                <span className="betslip-system__radio-item-text">
-                                    <span>System
-                        <span className="bet-slip-menu-item-submenu-systemX">2</span>/<span className="bet-slip-menu-item-submenu-system">3</span>
-                                    </span>
-                                </span>
-                            </span>
-                        </label>
-                    </li>
-                    <li className="betslip-system__radio-item">
-                        <label className="radio-label">
-                            <input name="SystemBets" type="radio" value="2/3" />
-                            <span>
-                                <span className="betslip-system__radio-item-help">
-                                    <div data-toggle="modal" data-target="#systemModal" className="combinations-btn">3 bets</div>
-                                </span>
-                                <span className="betslip-system__radio-item-text">
-                                    <span>System
-                        <span className="bet-slip-menu-item-submenu-systemX">2</span>/<span className="bet-slip-menu-item-submenu-system">3</span>
-                                    </span>
-                                </span>
-                            </span>
-                        </label>
-                    </li>
-                    <li className="betslip-system__radio-item">
-                        <label className="radio-label">
-                            <input name="SystemBets" type="radio" value="2/3" />
-                            <span>
-                                <span className="betslip-system__radio-item-help">
-                                    <div data-toggle="modal" data-target="#systemModal" className="combinations-btn">3 bets</div>
-                                </span>
-                                <span className="betslip-system__radio-item-text">
-                                    <span>System
-                        <span className="bet-slip-menu-item-submenu-systemX">2</span>/<span className="bet-slip-menu-item-submenu-system">3</span>
-                                    </span>
-                                </span>
-                            </span>
-                        </label>
-                    </li>
-                    <li className="betslip-system__radio-item">
-                        <label className="radio-label">
-                            <input name="SystemBets" type="radio" value="2/3" />
-                            <span>
-                                <span className="betslip-system__radio-item-help">
-                                    <div data-toggle="modal" data-target="#systemModal" className="combinations-btn">3 bets</div>
-                                </span>
-                                <span className="betslip-system__radio-item-text">
-                                    <span>System
-                        <span className="bet-slip-menu-item-submenu-systemX">2</span>/<span className="bet-slip-menu-item-submenu-system">3</span>
-                                    </span>
-                                </span>
-                            </span>
-                        </label>
-                    </li>
-                    <li className="betslip-system__radio-item">
-                        <label className="radio-label">
-                            <input name="SystemBets" type="radio" value="2/3" />
-                            <span>
-                                <span className="betslip-system__radio-item-help">
-                                    <div data-toggle="modal" data-target="#systemModal" className="combinations-btn">3 bets</div>
-                                </span>
-                                <span className="betslip-system__radio-item-text">
-                                    <span>System
-                        <span className="bet-slip-menu-item-submenu-systemX">2</span>/
-                        <span className="bet-slip-menu-item-submenu-system">3</span>
-                                    </span>
-                                </span>
-                            </span>
-                        </label>
-                    </li>
-                    <li className="betslip-system__radio-item">
-                        <label className="radio-label">
-                            <input name="SystemBets" type="radio" value="2/3" />
-                            <span>
-                                <span className="betslip-system__radio-item-help">
-                                    <div data-toggle="modal" data-target="#systemModal" className="combinations-btn">3 bets</div>
-                                </span>
-                                <span className="betslip-system__radio-item-text">
-                                    <span>System
-                        <span className="bet-slip-menu-item-submenu-systemX">2</span>/
-                        <span className="bet-slip-menu-item-submenu-system">3</span>
-                                    </span>
-                                </span>
-                            </span>
-                        </label>
-                    </li>
-                    <li className="betslip-system__radio-item">
-                        <label className="radio-label">
-                            <input name="SystemBets" type="radio" value="2/3" />
-                            <span>
-                                <span className="betslip-system__radio-item-help">
-                                    <div data-toggle="modal" data-target="#systemModal" className="combinations-btn">3 bets</div>
-                                </span>
-                                <span className="betslip-system__radio-item-text">
-                                    <span>System
-                        <span className="bet-slip-menu-item-submenu-systemX">2</span>/
-                        <span className="bet-slip-menu-item-submenu-system">3</span>
-                                    </span>
-                                </span>
-                            </span>
-                        </label>
-                    </li>
-                </ul>
-            </div>
+
+
+            <SystemList />
+
+
+
+            
             <div className="bs-footer">
                 <div className="bs-footer__summary">
                     <div className="row">
