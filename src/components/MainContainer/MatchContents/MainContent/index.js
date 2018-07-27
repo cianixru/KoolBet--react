@@ -18,11 +18,11 @@ class MainContent extends React.Component {
     render() {
         const SwitchMatchBoard = (page) => {
             switch (page) {
-                case 0:
+                case '/sport':
                     return <SportMatchBoard resize={setTimeout(this.reRender, 0)} />
                     break;
 
-                case 1:
+                case '/live':
                     return <LiveMatchBoard resize={setTimeout(this.reRender, 0)} />
                     break;
 
@@ -43,7 +43,7 @@ class MainContent extends React.Component {
                     renderView={({ style, ...props }) => <div {...props} style={{ ...style, paddingRight: 4 }} className="view" />}
                     hideTracksWhenNotNeeded={true}
                 >
-                {SwitchMatchBoard(this.props.state.currentPage)}
+                {SwitchMatchBoard(this.props.location.pathname)}
                 </Scrollbars>
             </div>
         )

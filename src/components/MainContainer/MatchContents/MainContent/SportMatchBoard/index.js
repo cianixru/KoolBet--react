@@ -1,4 +1,5 @@
 import React from 'react';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 import CategoriesFilter from './CategoriesFilter';
 import Main from './Markets/Main';
@@ -16,26 +17,37 @@ import HalftimeFulltime from './Markets/HalftimeFulltime';
 import HtHalves from './Markets/HtHalves';
 
 export default class SportMatchBoard extends React.Component {
+    componentDidMount() {
+        document.title = "Sport";
+        document.querySelector("meta[name='description']").setAttribute("content", "");
+        document.querySelector("meta[name='keywords']").setAttribute("content", "");
+    }
 
     render() {
         return (
-            <div>
-                <CategoriesFilter  resize={this.props.resize}/>
-                <Main/>
-                <ExactGoals/>
-                <Total/>
-                <FirstHalf/>
-                <DcCombo/>
-                <FirstHalfDcCombo/>
-                <FirstHalfCombo/>
-                <FirstHalfCorrectScore/>
-                <FirstHalfTotals/>
-                <Handicap/>
-                <SportTablesMainExtended/>
-                <HalftimeFulltime/>
-                <HtHalves/>
+            <div class="page-grid__item main scroll">
+                <Scrollbars
+                    renderTrackVertical={({ style, ...props }) => <div {...props} style={{ ...style, width: 4, right: 0, bottom: 2, top: 2, borderRadius: 3 }} className="track-vertical" />}
+                    renderThumbVertical={({ style, ...props }) => <div {...props} style={{ ...style, backgroundColor: 'rgba(255, 255, 255, 0.3)', borderRadius: 3 }} className="track-vertical" />}
+                    renderView={({ style, ...props }) => <div {...props} style={{ ...style, paddingRight: 4 }} className="view" />}
+                    hideTracksWhenNotNeeded={true}
+                >
+                    <CategoriesFilter resize={this.props.resize} />
+                    <Main />
+                    <ExactGoals />
+                    <Total />
+                    <FirstHalf />
+                    <DcCombo />
+                    <FirstHalfDcCombo />
+                    <FirstHalfCombo />
+                    <FirstHalfCorrectScore />
+                    <FirstHalfTotals />
+                    <Handicap />
+                    <SportTablesMainExtended />
+                    <HalftimeFulltime />
+                    <HtHalves />
+                </Scrollbars>
             </div>
- 
         )
     }
 }

@@ -11,9 +11,10 @@
 }
 
 .inputSection-item {
-    margin-bottom: 1rem;;
+    margin-bottom: 1rem;
 }
 
 .has-error input {
-    border: 1px solid #d50000!important;
+    border: 1px solid #d50000 !important;
 }
+

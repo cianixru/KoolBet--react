@@ -9,10 +9,6 @@ const rewireLess = require('react-app-rewire-less');
     javascriptEnabled: true,
     modifyVars: { 
       "@font-family": "'Roboto Condensed', Arial, sans-serif",
-      "@primary-color": "#ffbf00",
-      "@btn-primary-color": "#000",
-      "@menu-dark-color": "#fff",
-      "@menu-dark-bg": "#393b50",
    },
   })(config, env);
     return config;
