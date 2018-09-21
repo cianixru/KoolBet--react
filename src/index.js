@@ -1,17 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import configureStore from './reducers/configureStore'
 import { PersistGate } from 'redux-persist/lib/integration/react'
-import { BrowserRouter, Route } from 'react-router-dom'
-import routes from "./config/Routes"
+import { BrowserRouter } from 'react-router-dom'
 
-import Header from './components/Header/index';
-import MobileToolbar from './components/MobileToolbar/index';
-
-import './fonts/fonts.css'
-import './app.css'
+import configureStore from './state/reducers/configureStore'
 import Theme from "./config/Theme"
+import './view/fonts/fonts.css'
+import './view/app.css'
+
+import Header from './view/components/Header/index';
+import MobileToolbar from './view/components/MobileToolbar/index';
+import RouterGrid from './view/components/RouterGrid/index';
+
 
 let { store, persistor } = configureStore()
 
@@ -21,40 +22,8 @@ const App = props => (
       <BrowserRouter>
         <Theme>
           <Header />
-          <div className="page__container">
-            <div className="page-grid">
 
-              {/* Left Sidebar */}
-              {routes.map((route, index) => (
-                <Route
-                  key={index}
-                  path={route.path}
-                  exact={route.exact}
-                  component={route.LeftSidebar}
-                />
-              ))}
-
-              {/* Main */}
-              {routes.map((route, index) => (
-                <Route
-                  key={index}
-                  path={route.path}
-                  exact={route.exact}
-                  component={route.MainContent}
-                />
-              ))}
-
-              {/* Right Sidebar */}
-              {routes.map((route, index) => (
-                <Route
-                  key={index}
-                  path={route.path}
-                  exact={route.exact}
-                  component={route.RightSidebar}
-                />
-              ))}
-            </div>
-          </div>
+            <RouterGrid/>
 
           {/* MobileToolbar */}
           <MobileToolbar />

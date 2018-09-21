@@ -1,0 +1,23 @@
+{
+    "status": "Success",
+    "errorMessage": null,
+    "response": {
+        "amount": "990490.78",
+        "reserved": "0.00",
+        "realAmount": "990490.78",
+        "realReserved": "0.00",
+        "bonusAmount": "0",
+        "bonusReserved": "0",
+        "rolloveredAmount": "0",
+        "bonusWithdrawalRolloveredAmount": "0",
+        "confidenceFactor": "1.00",
+        "finallyTimeout": "",
+        "regularBonusBalance": {
+            "amount": 0.0,
+            "reserved": 0.0,
+            "expiringAmount": 0.0,
+            "expiringAt": null
+        }
+    },
+    "errorCode": null
+}

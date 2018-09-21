@@ -1,7 +1,19 @@
-.DS_Store
-node_modules
-npm-debug.log
-bower_components
-dist
-*.swp
+/node_modules
+/build
+/.vscode
+package-lock.json
+jsconfig.json
+
+# IntelliJ
+out/
+.idea/*
+*.iml
+**/logs
 *.log
+logs
+logs/
+target
+.idea
+*.iws
+*.iml
+*.ipr

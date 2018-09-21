@@ -1,0 +1,24 @@
+{
+    "status": "Success",
+    "errorMessage": null,
+    "response": {
+        "accountId": null,
+        "userName": "testuser1",
+        "firstName": "Harald",
+        "lastName": "Schultz",
+        "dateOfBirth": "06.06.1957",
+        "email": "h.schultz@pbt.com.mt",
+        "country": null,
+        "address": "undefined",
+        "documentType": "stub",
+        "documentNumber": "stub",
+        "phone": "123123123123",
+        "currency": "EUR",
+        "phoneVerified": true,
+        "bankName": "Harald",
+        "bankAccountNumber": "Schultz",
+        "verified": 1,
+        "affiliate": false
+    },
+    "errorCode": null
+}

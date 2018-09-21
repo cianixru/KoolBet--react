@@ -1,0 +1,27 @@
+.inputSection-explain {
+    color: #d50000;
+    background: #ffe9e9;
+    padding: 3px;
+    font-size: 14px;
+}
+
+.registration__wrapper .registration-form .social-registration {
+    padding-top: 10px;
+    height: auto;
+}
+
+.inputSection-item {
+    margin-bottom: 1rem;;
+}
+
+.has-error input {
+    border: 1px solid #d50000!important;
+}
+
+.control-group__birthday {
+    height: 40px;
+}
+
+body {
+    overflow: auto!important;
+}
