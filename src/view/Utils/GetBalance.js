@@ -1,10 +1,11 @@
-import { Component } from 'react';
+import {Component, Fragment} from 'react';
 import { readCookie } from './Cookies';
+import { connect } from "react-redux";
 
 import { balanceAPI } from "config/constants";
+import React from "react";
 
-export default class GetBalance extends Component {
-    state = { balance: '0' }
+class GetBalance extends Component {
 
     componentDidMount() {
         let accessToken = readCookie('token');
@@ -21,17 +22,28 @@ export default class GetBalance extends Component {
                 })
                 .then(response => {
                     if (response !== undefined) {
-                        this.setState(prevState => {
-                            if (prevState.balance !== response) {
-                                return { balance: response.response }
-                            }
-                        })
+                        if (this.props.state.balance && (this.props.state.balance.amount !== response.response.amount)) {
+                            this.props.dispatch({ type: 'SET_BALANCE', payload: response.response });
+                        }
                     }
                 })
         }
     }
 
+
     render() {
-        return this.state.balance + '$';
+        return <Fragment>{this.props.state.balance.amount-this.props.state.balance.reserved}  {this.props.state.userData.currency}</Fragment>;
     }
 }
+
+
+function mapStateToProps(state) {
+    return {
+        state: {
+            balance: state.balance,
+            userData:state.userData.currentUserData
+        }
+    }
+}
+
+export default connect(mapStateToProps)(GetBalance)

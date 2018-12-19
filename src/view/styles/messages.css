@@ -1,0 +1,171 @@
+/* stylelint-disable at-rule-empty-line-before,at-rule-name-space-after,at-rule-no-unknown */
+/* stylelint-disable no-duplicate-selectors */
+/* stylelint-disable */
+/* stylelint-disable declaration-bang-space-before,no-duplicate-selectors,string-no-newline */
+.ant-message {
+    font-size: 14px;
+    /*font-variant: tabular-nums;*/
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.9);
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    position: fixed;
+    z-index: 99999;
+    width: 100%;
+    top: 16px;
+    left: 0;
+    pointer-events: none;
+  }
+  .ant-message-notice {
+    padding: 8px;
+    text-align: center;
+  }
+  .ant-message-notice:first-child {
+    margin-top: -8px;
+  }
+  .ant-message-notice-content {
+    padding: 8px 14px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    background: #fff;
+    display: inline-block;
+    pointer-events: all;
+  }
+  .ant-message-success .anticon {
+    color: #52c41a;
+  }
+  .ant-message-error .anticon {
+    color: #f5222d;
+  }
+  .ant-message-warning .anticon {
+    color: #faad14;
+  }
+  .ant-message-info .anticon,
+  .ant-message-loading .anticon {
+    color: #1890ff;
+  }
+  .ant-message .anticon {
+    margin-right: 8px;
+    font-size: 22px;
+    top: 1px;
+    position: relative;
+  }
+  .move-up-enter,
+  .move-up-appear {
+    -webkit-animation-duration: 0.2s;
+            animation-duration: 0.2s;
+    -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+    -webkit-animation-play-state: paused;
+            animation-play-state: paused;
+  }
+  .move-up-enter.move-up-enter-active,
+  .move-up-appear.move-up-appear-active {
+    -webkit-animation-name: antMoveUpIn;
+            animation-name: antMoveUpIn;
+    -webkit-animation-play-state: running;
+            animation-play-state: running;
+  }
+
+.move-up-enter,
+.move-up-appear {
+  opacity: 0;
+  -webkit-animation-timing-function: cubic-bezier(0.08, 0.82, 0.17, 1);
+          animation-timing-function: cubic-bezier(0.08, 0.82, 0.17, 1);
+}
+  
+  .ant-message-notice.move-up-leave.move-up-leave-active {
+    -webkit-animation-name: MessageMoveOut;
+            animation-name: MessageMoveOut;
+    overflow: hidden;
+    -webkit-animation-duration: .3s;
+            animation-duration: .3s;
+  }
+  .ant-message-custom-content {
+    display: flex;
+    align-items: center;
+  }
+  @-webkit-keyframes antMoveUpIn {
+    0% {
+      -webkit-transform-origin: 0 0;
+              transform-origin: 0 0;
+      -webkit-transform: translateY(-100%);
+              transform: translateY(-100%);
+      opacity: 0;
+    }
+    100% {
+      -webkit-transform-origin: 0 0;
+              transform-origin: 0 0;
+      -webkit-transform: translateY(0%);
+              transform: translateY(0%);
+      opacity: 1;
+    }
+  }
+  @keyframes antMoveUpIn {
+    0% {
+      -webkit-transform-origin: 0 0;
+              transform-origin: 0 0;
+      -webkit-transform: translateY(-100%);
+              transform: translateY(-100%);
+      opacity: 0;
+    }
+    100% {
+      -webkit-transform-origin: 0 0;
+              transform-origin: 0 0;
+      -webkit-transform: translateY(0%);
+              transform: translateY(0%);
+      opacity: 1;
+    }
+  }
+
+  @-webkit-keyframes MessageMoveOut {
+    0% {
+      opacity: 1;
+      max-height: 150px;
+      padding: 8px;
+    }
+    100% {
+      opacity: 0;
+      max-height: 0;
+      padding: 0;
+    }
+  }
+  @keyframes MessageMoveOut {
+    0% {
+      opacity: 1;
+      max-height: 150px;
+      padding: 8px;
+    }
+    100% {
+      opacity: 0;
+      max-height: 0;
+      padding: 0;
+    }
+  }
+.anticon-spin:before {
+  display: inline-block;
+  -webkit-animation: loadingCircle 1s infinite linear;
+          animation: loadingCircle 1s infinite linear;
+}
+.anticon-spin {
+  display: inline-block;
+  -webkit-animation: loadingCircle 1s infinite linear;
+          animation: loadingCircle 1s infinite linear;
+}
+  
+@-webkit-keyframes loadingCircle {
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes loadingCircle {
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,15 @@
+.menu{
+    color: white;
+}
+
+.no-options{
+    text-align: center;
+    color: white;
+    position: relative;
+}
+
+.single{
+    position: absolute;
+    top:25px;
+    z-index: 2;
+}

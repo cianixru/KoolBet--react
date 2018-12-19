@@ -11,7 +11,7 @@ export default function tournamentsData(state = initialState, action) {
         }
 
         case ('DELETE_VIRTUAL_TOURNAMENTS_DATA'): {
-            return state = state.filter(e => e.tournament.tournamentId != action.payload); //.tournament.tournamentId ?
+            return state = state.filter(e => e.tournament.tournamentId !== action.payload); //.tournament.tournamentId ?
         }
 
         case ('CLEAR_VIRTUAL_TOURNAMENTS_DATA'): {
@@ -25,5 +25,6 @@ export default function tournamentsData(state = initialState, action) {
         default: {
             return state;
         }
+
     }
 }

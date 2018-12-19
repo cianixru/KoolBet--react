@@ -1,0 +1,71 @@
+$color-from: rgba(0, 0, 0, 0);
+$color-to: rgba(0, 0, 0, 0.25);
+
+.live-match-display__wrapper {
+    @extend .match-display__wrapper;
+    padding: 15px 0;
+}
+// prematch-display
+.match-display__wrapper {
+    @extend .match-display__wrapper;
+}
+.match-display__wrapper {
+    background-repeat: no-repeat, no-repeat, no-repeat;
+    background-position: 0px -20px, top;
+    background-size: auto 1000px, cover;
+
+    & {
+        background-image: radial-gradient(ellipse at center, $color-from 0%, $color-to 100%),
+            url(./../../img/sport-bg/default-big.jpg);
+    }
+
+    &.Soccer,
+    &.Football,
+    &.soccer,
+    &.football {
+        background-image: radial-gradient(ellipse at center, $color-from 0%, $color-to 100%),
+            url(./../../img/sport-bg/soccer-big.jpg);
+    }
+
+    &.AmericanFootball,
+    &.americanFootball {
+        background-image: radial-gradient(ellipse at center, $color-from 0%, $color-to 100%),
+            url(./../../img/sport-bg/american-football-big.jpg);
+    }
+
+    &.Baseball,
+    &.baseball {
+        background-image: radial-gradient(ellipse at center, $color-from 0%, $color-to 100%),
+            url(./../../img/sport-bg/baseball-big.jpg);
+    }
+
+    &.Basketball,
+    &.basketball {
+        background-image: radial-gradient(ellipse at center, $color-from 0%, $color-to 100%),
+            url(./../../img/sport-bg/basketball-big.jpg);
+    }
+
+    &.Handball,
+    &.handball {
+        background-image: radial-gradient(ellipse at center, $color-from 0%, $color-to 100%),
+            url(./../../img/sport-bg/handball-big.jpg);
+    }
+
+    &.IceHockey,
+    &.iceHockey {
+        background-image: radial-gradient(ellipse at center, $color-from 0%, $color-to 100%),
+            url(./../../img/sport-bg/ice-hockey-big.jpg);
+    }
+
+    &.Tennis,
+    &.tennis {
+        background-image: radial-gradient(ellipse at center, $color-from 0%, $color-to 100%),
+            url(./../../img/sport-bg/tennis-big.jpg);
+    }
+
+    &.Volleyball,
+    &.volleyball {
+        background-image: radial-gradient(ellipse at center, $color-from 0%, $color-to 100%),
+            url(./../../img/sport-bg/volleyball-big.jpg);
+    }
+}

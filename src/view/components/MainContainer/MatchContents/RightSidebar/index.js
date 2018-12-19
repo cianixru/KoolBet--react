@@ -1,24 +1,43 @@
-import React from 'react';
-// import BetSlip from './BetSlip';
-import BSArea from './BSArea';
-// import { connect } from "react-redux";
+import React, { PureComponent, Fragment } from 'react';
+import { connect } from "react-redux";
+import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
 
-export default class RightSidebar extends React.Component {
+import BSArea from './BSArea';
+
+class RightSidebar extends PureComponent {
+    state = {
+        bottom: true,
+    };
+
+    toggleDrawer = (side, open) => {
+        this.props.dispatch({ type: 'BN_ACTION', payload: open })
+    };
 
     render() {
         return (
-            <div className="page-grid__item betslip-area" id="betslipArea">
-                <BSArea />
-            </div>
-        )
+            <Fragment>
+                <Hidden mdDown>                   
+                    <BSArea toggleDrawer={(side, open) => this.toggleDrawer(side, open)} />
+                </Hidden>
+                <Hidden mdUp>
+                    <Drawer
+                        anchor="bottom"
+                        open={this.props.state.bottomNavigation.bnAction === 2 ? true : false}
+                        variant="persistent"
+                    >
+                        <BSArea toggleDrawer={(side, open) => this.toggleDrawer(side, open)} />
+                    </Drawer>
+                </Hidden>
+            </Fragment>
+        );
     }
 }
-
-// function mapStateToProps (state) {
-//     return {
-//         state:{
-//         }
-//     }
-//   }
-
-// export default connect(mapStateToProps)(RightSidebar)
+const mapStateToProps = (state) => {
+    return {
+        state: {
+            bottomNavigation: state.bottomNavigation,
+        }
+    }
+}
+export default connect(mapStateToProps)(RightSidebar);

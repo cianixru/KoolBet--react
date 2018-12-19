@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from "react-redux";
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { withStyles } from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
+import {FormattedMessage} from "react-intl";
 
-class CheckboxControls extends React.Component {
+class CheckboxControls extends Component {
     handleChangeCheckbox = name => event => {
         this.setState({ [name]: event.target.checked });
         switch (name) {
@@ -23,33 +23,34 @@ class CheckboxControls extends React.Component {
 
     render() {
         const { classes } = this.props;
-
+        const { advanced, sameStake, currentTab } = this.props.state.betSlip;
+        
         return (
             <div className="bs-checkboxes">
                 <FormControlLabel
                     classes={{ root: classes.root }}
-                    label='Advanced'
+                    label={<FormattedMessage id="MainContainer.MatchContents.RightSidebar.CheckboxControls.Advanced" defaultMessage="Advanced"/>}
                     control={
                         <Checkbox
-                            checked={this.props.state.betSlip.advanced}
+                            checked={advanced}
                             onChange={this.handleChangeCheckbox('checkAdvanced')}
                             className={classes.size}
                         />
                     }
                 />
-                {this.props.state.betSlip.tab === 0
-                    ? <FormControlLabel
+                {currentTab === 0 &&
+                    <FormControlLabel
                         classes={{ root: classes.root }}
-                        label='Same Stake'
+                        label="Same Stake"
                         control={
                             <Checkbox
-                                checked={this.props.state.betSlip.sameStake}
+                                checked={sameStake}
                                 onChange={this.handleChangeCheckbox('checkSameStake')}
                                 className={classes.size}
                             />
                         }
                     />
-                    : null}
+                }
             </div>
         )
     }
@@ -72,9 +73,5 @@ function mapStateToProps(state) {
         }
     }
 }
-
-CheckboxControls.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
 
 export default connect(mapStateToProps)(withStyles(styles)(CheckboxControls))

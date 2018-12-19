@@ -1,0 +1,137 @@
+[{
+    "title": "Aide",
+    "category": "help",
+    "items": [{
+        "url": "/pages/help/sports_betting",
+        "dir": "html/help/fr/how-to-bet",
+        "label": "Règles de Pari"
+    }, {
+        "url": "/pages/help/general-rules",
+        "dir": "html/help/fr/general-rules",
+        "label": "RÈGLES GÉNÉRALES"
+    }, {
+        "url": "/pages/help/soccer",
+        "dir": "html/help/fr/soccer",
+        "label": "FOOTBALL"
+    }, {
+        "url": "/pages/help/basketball",
+        "dir": "html/help/fr/basketball",
+        "label": "BASKETBALL"
+    }, {
+        "url": "/pages/help/ice-hockey",
+        "dir": "html/help/fr/ice-hockey",
+        "label": "HOCKEY SUR GLACE"
+    }, {
+        "url": "/pages/help/tennis",
+        "dir": "html/help/fr/tennis",
+        "label": "TENNIS"
+    }, {
+        "url": "/pages/help/volleyball",
+        "dir": "html/help/fr/volleyball",
+        "label": "VOLLEYBALL"
+    }, {
+        "url": "/pages/help/american-football",
+        "dir": "html/help/fr/american-football",
+        "label": "FOOTBALL AMERICAIN"
+    }, {
+        "url": "/pages/help/aussie-rules",
+        "dir": "html/help/fr/aussie-rules",
+        "label": "RÈGLES D’AUSSIE"
+    }, {
+        "url": "/pages/help/bandy",
+        "dir": "html/help/fr/bandy",
+        "label": "BANDY"
+    }, {
+        "url": "/pages/help/baseball",
+        "dir": "html/help/fr/baseball",
+        "label": "BASEBALL"
+    }, {
+        "url": "/pages/help/beach-soccer",
+        "dir": "html/help/fr/beach-soccer",
+        "label": "FOOTBALL DE LA PLAGE"
+    }, {
+        "url": "/pages/help/curling",
+        "dir": "html/help/fr/curling",
+        "label": "Curling"
+    }, {
+        "url": "/pages/help/cycling",
+        "dir": "html/help/fr/cycling",
+        "label": "VÉLO"
+    }, {
+        "url": "/pages/help/darts",
+        "dir": "html/help/fr/darts",
+        "label": "FLÉCHETTES"
+    }, {
+        "url": "/pages/help/floorball",
+        "dir": "html/help/fr/floorball",
+        "label": "FLOORBALL"
+    }, {
+        "url": "/pages/help/futsal",
+        "dir": "html/help/fr/futsal",
+        "label": "Futsal"
+    }, {
+        "url": "/pages/help/golf",
+        "dir": "html/help/fr/golf",
+        "label": "Golf"
+    }, {
+        "url": "/pages/help/motorsport",
+        "dir": "html/help/fr/motorsport",
+        "label": "SPORTS DE MOTEUR"
+    }, {
+        "url": "/pages/help/pesapallo",
+        "dir": "html/help/fr/pesapallo",
+        "label": "Pesapallo"
+    }, {
+        "url": "/pages/help/rugby",
+        "dir": "html/help/fr/rugby",
+        "label": "Rugby"
+    }, {
+        "url": "/pages/help/snooker",
+        "dir": "html/help/fr/snooker",
+        "label": "Snooker"
+    }, {
+        "url": "/pages/help/waterpolo",
+        "dir": "html/help/fr/waterpolo",
+        "label": "Waterpolo"
+    }, {
+        "url": "/pages/help/winter-sports",
+        "dir": "html/help/fr/winter-sports",
+        "label": "SPORTS D‘HIVER"
+    }]
+}, {
+    "title": "Information",
+    "category": "info",
+    "items": [{
+        "url": "/pages/info/bonus",
+        "dir": "html/info/fr/bonus",
+        "label": "Bonus"
+    }, {
+        "url": "/pages/info/responsible-gaming-information",
+        "dir": "html/info/fr/responsible-gaming-information",
+        "label": "Information de Jeu Responsable"
+    }, {
+        "url": "/pages/info/sport-betting-rules-general",
+        "dir": "html/info/fr/sport-betting-rules-general",
+        "label": "Règles de paris (général)"
+    }, {
+        "url": "/pages/info/sport-betting-rules-prematch",
+        "dir": "html/info/fr/sport-betting-rules-prematch",
+        "label": "Règles de pari (avant match)"
+    }, {
+        "url": "/pages/info/faq",
+        "dir": "html/info/fr/faq",
+        "label": "FAQ"
+    }]
+}, {
+    "title": "Company",
+    "category": "about",
+    "items": [{
+        "url": "/pages/about/about-us",
+        "dir": "html/about/fr/about",
+        "label": "QUI SOMMES-NOUS"
+    }, {
+        "url": "/pages/about/contact-us",
+        "dir": "html/about/fr/contact-us",
+        "label": "Contactez nous"
+    }]
+}]

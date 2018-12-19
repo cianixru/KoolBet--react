@@ -1,0 +1,19 @@
+.score-total{
+    -webkit-flex-flow:column nowrap !important;
+    -ms-flex-flow:column nowrap !important;
+    flex-flow:column nowrap !important;
+    margin-bottom: 5px;
+}
+
+.score-total__content-wrapper{
+    display: flex;
+    -webkit-flex-flow:row nowrap;
+    -ms-flex-flow:row nowrap;
+    flex-flow:row nowrap;
+}
+
+.score__small-label{
+    margin-bottom: 0px;
+    margin-top: 0px;
+    font-size: smaller;
+}

@@ -1,0 +1,21 @@
+{
+  "env": {
+    "test": {
+      "presets": [
+        "@babel/env",
+        "@babel/react"
+      ],
+      "plugins": [
+        "transform-export-extensions",
+        "@babel/plugin-proposal-class-properties"
+      ],
+      "only": [
+        "./src/**/*.js",
+        "./tests/**/*.js"
+      ],
+      "ignore": [
+        "node_modules"
+      ]
+    }
+  }
+}

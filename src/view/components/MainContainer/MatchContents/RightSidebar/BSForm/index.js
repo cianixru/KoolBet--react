@@ -1,509 +1,840 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from "react-redux";
+import React, {PureComponent} from 'react';
+import {connect} from "react-redux";
 
-import './modal.css';
-import './BSForm.css';
+import {ticketAPI, saveTicketAPI, getLimitsAPI} from "config/constants";
+import {readCookie} from 'view/Utils/Cookies';
+import SystemList from './SystemList';
+import BetSlipList from './BetSlipList';
+import BSAlertBox from './BSAlertBox';
+import {
+    getVal, getValLive, totalSystemCoef, systemTipSize, getBonusAmount,
+    coefsCalc, systemCombinations
+} from './../BSLogic';
+import {withRouter} from 'react-router-dom';
 
-import { getLimitsJSON } from './JSON/getLimits';
-import { ticketAPI } from "config/constants";
-import { readCookie } from 'view/Utils/Cookies';
-import SystemList  from './SystemList';
-import { getVal, getValLive, coefsCalc, totalSystemCoef, systemTipSize, getBonusAmount, systemCombinations, tournamentsCount } from './../BSLogic';
-import { withRouter } from 'react-router-dom';
+import 'view/styles/messages.css';
 
-const accessToken = readCookie('token');
-let TournamentsBets, TournamentsObjLive, TournamentsObj;
+import {FormattedMessage} from "react-intl";
+import {QuickBetButton} from "./QuickBetButton";
 
-class BSForm extends Component {
+
+let getLimitsJSON;
+let minStake, maxStake, maxWin, minCombination, maxCombination, maxOdd, maxSystemBet;
+
+class BSForm extends PureComponent {
     state = {
-        modalOpen: false,
+        isVirtual: this.props.location.pathname.match(".*\/virtual.*"),
+        singlePossibleWinStake: 0,
+        possibleWinVariousStake: 0,
+        multiplePossibleWinStake: 0,
+        onSameStakeChange: false,
+        errorResponse: false,
+        errorCode: false,
+        alertState: true,
+        placeBet2addFunds: false,
+        removeBetMarketId: false,
+        placeBetPreloader: false,
+        savePreloader: false,
+        buttonsLock: false,
+        disabledSave: false,
+        sendRequestMethod: false,
+        trigger:true
     }
 
-    static getDerivedStateFromProps(props, state) {      
-        if (props.location.pathname === "/sport" || props.location.pathname === "/live") {
-            TournamentsBets = props.state.odds;
-            TournamentsObjLive = props.state.liveMatches;
-            TournamentsObj = props.state.tournamentsData;
-        }
-        if (props.location.pathname === "/virtual") {
-            TournamentsBets = props.state.virtualOdds;
-            TournamentsObj = props.state.virtualTournamentsData;
-        }
 
-        const getBetsArray = props.state.odds.map((arr) => {
-            if (props.state.tournamentsData.find(e => e.tournament.tournamentId == arr.tournamentId)) 
-                return getVal(props.state.tournamentsData, arr, 4).oddId
+
+    componentDidMount() {
+
+        setInterval(
+            () => {
+                console.log(this.state.trigger)
+               this.setState({trigger:true})
+            },
+            10000);
+
+        const requestLimits = async () => {
+            const response = await fetch(getLimitsAPI);
+            const getLimitsJSON = await response.json();
+
+            switch (this.props.state.betSlip.currentTab) {
+                case 0:
+                    minStake = getLimitsJSON.response.single.minStakeSingleBet;
+                    maxStake = getLimitsJSON.response.single.maxStakeSingleBet;
+                    maxWin = getLimitsJSON.response.single.maxWinSingleBet;
+                    break;
+                case 1:
+                    minStake = getLimitsJSON.response.multiple.minStakeCombiBet;
+                    maxStake = getLimitsJSON.response.multiple.maxStakeCombi;
+                    maxWin = "5000000.00";
+                    minCombination = getLimitsJSON.response.multiple.minCombination;
+                    maxCombination = getLimitsJSON.response.multiple.maxCombination;
+                    break;
+                case 2:
+                    minStake = getLimitsJSON.response.system.minStakeSystemBet;
+                    maxStake = getLimitsJSON.response.system.maxStakeSystemBet;
+                    maxWin = getLimitsJSON.response.system.maxWinSystemBet;
+                    maxOdd = getLimitsJSON.response.system.maxOdd;
+                    maxSystemBet = getLimitsJSON.response.system.maxSystemBet;
+                    break;
+            }
+        }
+        requestLimits();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps !== this.props) {
+            let disabeSave = this.props.TournamentsBets.map(e => e.type).some(e => !(e === "prematch"));
+            this.setState({disabledSave: disabeSave})
+        }
+        if(prevProps.state.betList.matchObj.length!==this.props.state.betList.matchObj.length){
+            this.setState({trigger:true})
+        }
+        if(prevProps.state.betList.bankersArray.length!==this.props.state.betList.bankersArray.length){
+            this.setState({trigger:true})
+        }
+    }
+
+
+    /*jshint ignore:start*/
+
+    /*eslint-disable*/
+    static getDerivedStateFromProps(props, state) {
+        const getBetsArray = props.TournamentsBets.map((arr) => {
+            let tournamentsData = props.TournamentsObj;
+
+            if (tournamentsData.find(e => e.tournament.tournamentId === arr.tournamentId))
+                return getVal(tournamentsData, arr, 4).oddId
         })
+
         props.state.betList.bankersArray.map(e => {
-            (getBetsArray).includes(e)
-                ? null
-                : props.dispatch({ type: 'BANKERS_ARRAY_REMOVE', payload: e })
-        })
-        return { ...state }
-    }
+            let checkBanker = props.state.betList.matchObj.findIndex(el => {
+                return e === el.OddId
+            });
+            if (checkBanker === -1) {
+                props.dispatch({type: 'BANKERS_ARRAY_REMOVE', payload: e})
+            }
 
-    handleBankerClick = (e, oddID) => {
-        if (!e.currentTarget.classList.contains('lock')) {
-            ((this.props.state.betList.bankersArray).includes(oddID))
-                ? this.props.dispatch({ type: 'BANKERS_ARRAY_REMOVE', payload: oddID })
-                : this.props.dispatch({ type: 'BANKERS_ARRAY', payload: oddID })
+        })
+
+        return {
+            ...state,
         }
     }
 
-    variousStakeHandleChange = (event, id) => {
-        this.props.dispatch({ type: 'VARIOUS_STAKE', id: id, payload: event.target.value })
+    /*eslint-enable*/
+    /*jshint ignore:end*/
+    setMinBonusStake = (props) => {
+        this.setState({onSameStakeChange: true})
+        this.props.dispatch({type: 'SAME_STAKE', payload: props})
+        this.setState({errorResponse: false})
     }
 
-    sameStakeHandleChange = (event) => {
-        this.props.dispatch({ type: 'SAME_STAKE', payload: event.target.value })
+    clearFaultCode = () => {
+        this.setState({errorResponse: false})
     }
 
-    sendRequest = (requestBody, allOddsArray, currentTab) => {       
+    sameStakeChange = (event) => {
+        this.props.dispatch({ type: 'SAME_STAKE', payload: event.target.value.replace(/^0+(?!\.|$)/, '').replace(/\D/g,'') })
+        this.setState({ onSameStakeChange: true })
+    }
+
+    sendRequest = (requestBody, allOddsArray, currentTab, method) => {
+        const accessToken = readCookie('token');
         if (currentTab !== 0) allOddsArray = [1];
+        this.setState({buttonsLock: true});
+
+        if (method === "place")
+            this.setState({placeBetPreloader: true});
+        else if (method === "save")
+            this.setState({savePreloader: true});
+
         allOddsArray.map(async (e, index) => {
-            const makeRequest = await fetch(ticketAPI, {
+            // console.log('JSON.stringify(requestBody(index)) :', JSON.stringify(requestBody(index)));
+            let url;
+
+            if (method === "place") url = ticketAPI;
+            else if (method === "save") url = saveTicketAPI;
+
+            let requestBodyObj = requestBody(index);
+
+            // TODO: проверить баланс перед отправкой запроса и сразу вывести ошибку если не хватает
+
+            const makeRequest = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-type": "application/json",
-                    "Authorization": accessToken
+                    "Authorization": (method === "place") ? accessToken : ""
                 },
-                body: JSON.stringify(requestBody(index))
+                body: JSON.stringify(requestBodyObj)
             })
             const answer = await makeRequest.json();
             const result = await answer;
-            console.log('answer :', result);
+            // console.log('answer :', result);
+
+            /*                 const result = {
+                                "ok": false,
+                                "response": {
+                                    "matchId": null,
+                                    "betRadarMatchId": null,
+                                    "oddId": null,
+                                    "betMarketId": null,
+                                    "errors": [],
+                                    "faultCode": 156,
+                                    "faultInfo": {
+                                        "code": 156,
+                                        "message": "Bet cannot be placed using bonus balance, cause it does not qualify for conditions.",
+                                        "parameters": {
+                                            "parameter": []
+                                        }
+                                    },
+                                    "message": null
+                                },
+                                "errors": [{
+                                    "message": null,
+                                    "htmlMessage": null
+                                }]
+                            }  */
+
+            /*             const result = {
+                            "ok": false,
+                            "response": {
+                                "matchId": null,
+                                "betRadarMatchId": null,
+                                "oddId": null,
+                                "betMarketId": null,
+                                "problemOdds": null,
+                                "minBonusStake": null,
+                                "errors": [],
+                                "faultCode": 229,
+                                "faultInfo": {
+                                    "code": 229,
+                                    "message": "Match in State BetStop , matchId : -34968283694236840",
+                                    "parameters": {
+                                        "parameter": []
+                                    }
+                                },
+                                "message": null
+                            },
+                            "errors": [{
+                                "message": null,
+                                "htmlMessage": null
+                            }]
+                        }
+
+             */
+
+            /*             const result = {
+                            "ok": false,
+                            "response": {
+                                "betMarketId": 4831891,
+                                "matchId": 766868,
+                                "betRadarMatchId": null,
+                                "oddId": null,
+                                "errors": ["Need remove market in hub with URI \"/hub/rest/match/removeMarket\""],
+                                "faultCode": 216,
+                                "faultInfo": {
+                                    "code": 216,
+                                    "message": "{\"betmarket_status\":1,\"betmarketid\":4831891,\"message\":\"Market with ID 4831891nullcurrently not visible in betoffer. Market status:1. Ticket not accepted:0027160001340\",\"matchid\":766868}",
+                                    "parameters": {
+                                        "parameter": []
+                                    }
+                                },
+                                "message": null
+                            },
+                            "errors": [{
+                                "message": null,
+                                "htmlMessage": null
+                            }]
+                        }
+
+                        /*  const result = {
+                            "ok": false,
+                            "response": {
+                                "oddId": "66373815",
+                                "matchId": "620476",
+                                "betRadarMatchId": null,
+                                "errors": [
+                                    "Match not active for odd 66373815. Ticket not accepted. BetDomain:null   0027160001205"
+                                ],
+                                "faultCode": 230,
+                                "faultInfo": {
+                                    "code": 230,
+                                    "message": "{\"message\":\"Match not active for odd 66373815. Ticket not accepted. BetDomain:null   0027160001205\",\"matchid\":620476,\"match_state\":4}",
+                                    "parameters": {
+                                        "parameter": []
+                                    }
+                                },
+                                "message": null
+                            },
+                            "errors": [
+                                {
+                                    "message": null,
+                                    "htmlMessage": null
+                                }
+                            ]
+                        }  */
+
+            /*              const result = {
+                            "ok": false,
+                            "response": {
+                                "matchId": null,
+                                "betRadarMatchId": null,
+                                "oddId": null,
+                                "errors": [],
+                                "faultCode": 154,
+                                "faultInfo": {
+                                    "code": 154,
+                                    "message": "Cannot use bonus balance before deposit.",
+                                    "parameters": {
+                                        "parameter": []
+                                    }
+                                },
+                                "message": null
+                            },
+                            "errors": [{
+                                "message": null,
+                                "htmlMessage": null
+                            }]
+                        }  */
+
+
+            /*          const result = {
+                         "ok": false,
+                         "response": {
+                             "matchId": null,
+                             "betRadarMatchId": null,
+                             "oddId": null,
+                             "betMarketId": null,
+                             "problemOdds": null,
+                             "minBonusStake": "50.0",
+                             "errors": [
+                                 "Stake below minimum bonus stake"
+                             ],
+                             "faultCode": 159,
+                             "faultInfo": {
+                                 "code": 159,
+                                 "message": "{\"msg\":\"Bet cannot be placed using bonus balance, cause stake less then minimum bonus stake.\",\"min_bonus_stake\":50.00}",
+                                 "parameters": {
+                                     "parameter": []
+                                 }
+                             },
+                             "message": null
+                         },
+                         "errors": [
+                             {
+                                 "message": null,
+                                 "htmlMessage": null
+                             }
+                         ]
+                     }  */
+
+            /*
+                        const result = {
+                            "ok": false,
+                            "response": {
+                                "matchId": null,
+                                "betRadarMatchId": null,
+                                "oddId": null,
+                                "betMarketId": null,
+                                "problemOdds": [{
+                                    "oddid": 73955617,
+                                    "requestedOddsValue": 3.14,
+                                    "serverOddsValue": 2.22
+                                },
+                                {
+                                    "oddid": 73956463,
+                                    "requestedOddsValue": 1.18,
+                                    "serverOddsValue": 3.33
+                                }],
+                                "minBonusStake": null,
+                                "errors": ["Need update odd in hub with URI \"/hub/rest/updateOdd\""],
+                                "faultCode": 217,
+                                "faultInfo": {
+                                    "code": 217,
+                                    "message": "[{\"oddid\":67958611,\"requestedOddsValue\":2.48,\"serverOddsValue\":2.10},{\"oddid\":67958432,\"requestedOddsValue\":2.18,\"serverOddsValue\":2.00}]",
+                                    "parameters": {
+                                        "parameter": []
+                                    }
+                                },
+                                "message": null
+                            },
+                            "errors": [{
+                                "message": null,
+                                "htmlMessage": null
+                            }]
+                        }
+            */
+
             if (result.ok) {
-                this.onClear();
+                setTimeout(
+                    () => {
+                        this.onClearBetSlip();
+                        this.props.setState({
+                            betDone: true,
+                            betDoneInfo: result.response,
+                            requestMethod: method
+                        })
+                        this.setState({
+                            errorResponse: false,
+                            placeBetPreloader: false,
+                            savePreloader: false,
+                            buttonsLock: false,
+                        })
+                    },
+                    1200);
+            } else {
+                setTimeout(
+                    () => {
+                        console.log('result.response :', result.response);
+                        if (typeof result.response !== "undefined")
+                        // message.error(result.response.faultInfo.message, 4);
+                            console.log('message.error  :', result.response);
+
+                        if (typeof answer.message !== "undefined")
+                            this.setState({errorResponse: answer.status})
+
+                        if (result.response && result.response.faultCode !== undefined) {
+                            this.setState({errorResponse: result.response})
+                        }
+                        if (!result.ok && Array.isArray(result.errors) && result.errors.length > 0) {
+                            this.setState({errorResponse: result.errors})
+                        }
+                        this.setState({
+                            buttonsLock: false,
+                            placeBetPreloader: false,
+                            savePreloader: false,
+                        });
+                    },
+                    1200);
             }
-            else {
-                console.log('answer Error (status):', answer.status);
-                console.log('answer Error (error):', answer.error);
-                console.log('answer Error (message):', answer.message);
-            }
+            // console.log('answer Error (status):', answer.status);
+            // console.log('answer Error (error):', answer.error);
+            // console.log('answer Error (message):', answer.message);
+
+            // console.log(Array.of(...Object.values(result)));
+            /*             message.loading('Please wait...', 1)
+                            .then(() => {
+                                if (result.ok) {
+                                    message.success("Your bet is accepted. Good luck!", 4);
+                                    this.onClearBetSlip();
+                                    this.props.setBetDoneState({ betDone: true })
+                                    this.props.setBetDoneInfo({ betDoneInfo: result.response })
+                                    this.setState({ errorResponse: false })
+                                }
+                                else {
+                                    console.log('result.response :', result.response);
+                                    if (typeof result.response !== "undefined")
+                                        message.error(result.response.faultInfo.message, 4);
+                                    if (typeof answer.message !== "undefined")
+                                        message.error(answer.message, 4);
+                                    // console.log('answer Error (status):', answer.status);
+                                    // console.log('answer Error (error):', answer.error);
+                                    // console.log('answer Error (message):', answer.message);
+
+                                    if (typeof result.response !== "undefined" && result.response.faultCode !== "undefined") {
+                                        this.setState({ errorResponse: result.response })
+                                    }
+                                }
+                            })
+                            .then(() => {
+                                this.setState({ buttonsLock: false });
+                            }) */
         })
     };
 
-    onPlaceBet = (e, requestBody, allOddsArray) => {
-        this.sendRequest(requestBody, allOddsArray, this.props.state.betSlip.tab);
+    onSendBet = (requestBody, allOddsArray, method) => {
+        if (method && method !== this.state.method)
+            this.setState({sendRequestMethod: method})
+        if ((this.props.state.isAuthenticated && method === "place") || method === "save")
+            this.sendRequest(requestBody, allOddsArray, this.props.state.betSlip.currentTab, method)
     }
 
-    onClear = (e) => {
-        this.props.dispatch({ type: 'CLEAR_BETLIST' });
-        this.props.dispatch({ type: 'CLEAR_ODD_LIST' })
+    onClearBetSlip = () => {
+        if (!this.state.isVirtual) {
+            this.props.dispatch({type: 'CLEAR_BETLIST'});
+            this.props.dispatch({type: 'CLEAR_ODD_LIST'})
+        } else {
+            this.props.dispatch({type: 'CLEAR_VIRTUAL_BETLIST'});
+            this.props.dispatch({type: 'CLEAR_VIRTUAL_ODD_LIST'})
+        }
     }
 
-    // getBetsArray = (e) => {
-    //     return this.props.state.odds.map((arr) => {
-    //         if (this.props.state.tournamentsData.find(e => e.tournament.tournamentId == arr.tournamentId)) return getVal(this.props.state.tournamentsData, arr, 4).oddId
-    //     })
-    // }
+    onSetWinStake = (singlePossibleWinStake, multiplePossibleWinStake, possibleWinVariousStake) => {
+        if (this.state.possibleWinVariousStake !== possibleWinVariousStake) this.setState({possibleWinVariousStake: possibleWinVariousStake})
+        if (this.state.singlePossibleWinStake !== singlePossibleWinStake) this.setState({singlePossibleWinStake: singlePossibleWinStake})
+        if (this.state.multiplePossibleWinStake !== multiplePossibleWinStake) this.setState({multiplePossibleWinStake: multiplePossibleWinStake})
+    }
+    onSendSameStakeChange = (props) => {
+        if (this.state.onSameStakeChange !== props) this.setState({onSameStakeChange: props})
+    }
 
-    alertBox = (minStake, maxStake) => {
-        let val, message;
-        if ((this.props.state.betSlip.sameStake === true && this.props.state.betSlip.tab === 0) || this.props.state.betSlip.tab !== 0) {
+    //TODO: Remake AlertBox func for minStake and maxStake
+    /*
+        alertBox = (minStake, maxStake) => {
+        let val, showMessage;
+        if ((this.props.state.betSlip.sameStake === true && this.props.state.betSlip.currentTab === 0) || this.props.state.betSlip.currentTab !== 0) {
             val = Number(this.props.state.betList.stakeValue);
         }
         else {
             // val = 200;
         }
-        if (val < minStake) message = "Your stake is below minimum. Enter valid stake";
-        if (val > maxStake) message = "Your stake is above maximum. Defaulting to maximum";
-        if (message) return (<div className="bs__limit-message"><div><i className="alert"></i>{message}</div></div>);
-    };
+        if (val < minStake) showMessage = "Your stake is below minimum. Enter valid stake";
+        if (val > maxStake) showMessage = "Your stake is above maximum. Defaulting to maximum";
+        if (showMessage) return (<div className="bs__limit-message"><div><i className="alert"></i>{showMessage}</div></div>);
+    }; */
+
+toggleTrigger = ()=>{
+    this.setState({trigger:true});
+}
 
     render() {
-        
-        
-
-        let tipSize = Object.keys(TournamentsBets).length;
-        let possibleWinVariousStake = 0;
-        let singlePossibleWinStake = 0;
-        let multiplePossibleWinStake = 0;
-        let allOddsArray = [];
-        let minStake, maxStake, maxWin, minCombination, maxCombination, maxOdd, maxSystemBet;
-        let currentTab = this.props.state.betSlip.tab;
-        switch (currentTab) {
-            case 0:
-                minStake = getLimitsJSON[0].response.single.minStakeSingleBet * tipSize;
-                maxStake = getLimitsJSON[0].response.single.maxStakeSingleBet;
-                maxWin = getLimitsJSON[0].response.single.maxWinSingleBet;
-                break;
-            case 1:
-                minStake = getLimitsJSON[0].response.multiple.minStakeCombiBet;
-                maxStake = getLimitsJSON[0].response.multiple.maxStakeCombi;
-                maxWin = "5000000.00";
-                minCombination = getLimitsJSON[0].response.multiple.minCombination;
-                maxCombination = getLimitsJSON[0].response.multiple.maxCombination;
-                break;
-            case 2:
-                minStake = getLimitsJSON[0].response.system.minStakeSystemBet;
-                maxStake = getLimitsJSON[0].response.system.maxStakeSystemBet;
-                maxWin = getLimitsJSON[0].response.system.maxWinSystemBet;
-                maxOdd = getLimitsJSON[0].response.system.maxOdd;
-                maxSystemBet = getLimitsJSON[0].response.system.maxSystemBet;
-                break;
-        }
-        let bonusAmount = (tipSize > 1) ? getBonusAmount(tipSize, getLimitsJSON) : "0";
-
+        const {betList, betSlip} = this.props.state;
+        let currentTab = betSlip.currentTab;
+        const {possibleWinVariousStake, singlePossibleWinStake, multiplePossibleWinStake} = this.state;
+        const {allOddsArray, lettersArr, coefsCalcArr} = betList;
         let bankers = [];
-        let betSlipList = TournamentsBets.map((arr, index) => {
 
-            let objType;
-            if (arr.type === "live") objType = TournamentsObjLive;
-            else if (arr.type === "prematch") objType = TournamentsObj;
+        let bonusAmount = (betList.tipSize > 1 && getLimitsJSON) ? getBonusAmount(betList.tipSize, getLimitsJSON) : "0";
 
-            // console.log('TournamentsObj :', JSON.stringify(TournamentsObj));
-            // console.log('id :', getValLive(TournamentsObjLive, arr, 1).id);
-            // console.log('getValLive1 :', getValLive(TournamentsObjLive, arr, 0).matchid);
-            // console.log('getValLive2 :', getValLive(TournamentsObjLive, arr, 1));
-            // console.log('getValLive3 :', getValLive(TournamentsObjLive, arr, 2).value);
-            // console.log('getValLive3 :', getValLive(TournamentsObjLive, arr, 2).oddId);
-            // console.log('TournamentsObjLive :', JSON.stringify(TournamentsObjLive));
-            // LIVE
+        let minBet = (currentTab !== 0) ? minStake : minStake * betList.tipSize;
 
-            if (arr.type === "live" && Object.keys(objType).some(e => e == arr.matchId)) {
-                allOddsArray.push(parseFloat(getValLive(objType, arr, 2).value));
-                singlePossibleWinStake += parseFloat(getValLive(objType, arr, 2).value);
-                // console.log('singlePossibleWinStake :', singlePossibleWinStake);
+        let systemCombos = [];
+        if (currentTab === 2 && this.state.trigger === true) {
 
+            systemCombos = systemCombinations(betList.lettersArr, betList.systemRadioValue, betList.bankersArray, betList.matchObj);
+            coefsCalcArr.splice(0, coefsCalcArr.length);
+            systemCombos.map((val) => coefsCalcArr.push(coefsCalc(val, allOddsArray)));
+            this.setState({trigger:false})
+        }
 
-                (multiplePossibleWinStake === 0)
-                    ? multiplePossibleWinStake = parseFloat(getValLive(objType, arr, 2).value)
-                    : multiplePossibleWinStake *= parseFloat(getValLive(objType, arr, 2).value);
-
-                if (typeof this.props.state.betList.variousStakeValue[getValLive(TournamentsObjLive, arr, 2).oddId] !== "undefined") {
-                    possibleWinVariousStake += this.props.state.betList.variousStakeValue[getValLive(TournamentsObjLive, arr, 2).oddId] * getValLive(objType, arr, 2).value;
-                }
-
-                (this.props.state.betList.bankersArray.includes(getValLive(TournamentsObjLive, arr, 2).oddId))
-                    ? (bankers.includes(getValLive(TournamentsObjLive, arr, 2).oddId)) ? null : bankers.push(String.fromCharCode(97 + index).toUpperCase())
-                    : null
-
-                return (
-                    <div className="bs__item ">
-                        <div className="bet-options">
-                            {currentTab === 2
-                                ? <Fragment>
-                                    <div className="system-letter">{String.fromCharCode(97 + index).toUpperCase()}</div>
-                                    <i className={
-                                        "bs-icon-banker " + (this.props.state.betList.bankersArray.includes(getValLive(TournamentsObjLive, arr, 2).oddId) === true
-                                            ? "active"
-                                            : ((systemTipSize(tournamentsCount(TournamentsBets, TournamentsObj, TournamentsObjLive)) - this.props.state.betList.bankersArray.length) === 1 || this.props.state.betList.systemRadioValue === 2) ? "lock" : ""
-                                        )
-                                    } onClick={(e) => this.handleBankerClick(e, getValLive(TournamentsObjLive, arr, 2).oddId)}></i>
-                                </Fragment>
-                                : null}
-                        </div>
-                        <div className="bet-event">
-                            <div className="row">
-                                <div className="bet-event__title">
-                                    {getValLive(TournamentsObjLive, arr, 0).home + "-" + getValLive(TournamentsObjLive, arr, 0).away}
-                                </div>
-                                <div className="bs-options__option-odds">
-                                    <span className="bs-options__odds-change"></span>
-                                </div>
-                                <div className="bet-close icon" onClick={() => this.props.dispatch({ type: 'DELETE_ODD', payload: getValLive(TournamentsObjLive, arr, 2).oddId })}>
-                                </div>
-                            </div>
-                            <div className="row space-between">
-                                <div className="bet-event__market">{getValLive(TournamentsObjLive, arr, 2).oddtag}</div>
-                                <div className="bet-event__rate">{getValLive(objType, arr, 2).value}</div>
-                            </div>
-                            <div className="row space-between">
-                                <div className="bet-event__team">{getValLive(TournamentsObjLive, arr, 1).betTitle}</div>
-                                <div className="bet-event__item-link"><span>
-                                    +
-                                </span></div>
-                            </div>
-                            {currentTab === 0 && this.props.state.betSlip.sameStake === false
-                                ? <div className="row bet-event__stakes space-between">
-                                    <div className="stake">
-                                        <div className="bs__stake-name">Stake</div>
-                                        <input className="bs__input" type="number" min="1" max="5000000"
-                                            value={this.props.state.betList.variousStakeValue[getValLive(TournamentsObjLive, arr, 2).oddId]}
-                                            onChange={(e) => this.variousStakeHandleChange(e, getValLive(TournamentsObjLive, arr, 2).oddId, getValLive(objType, arr, 2).value)}
-                                        />
-                                    </div>
-                                    <div className="estwin">
-                                        <div className="bs__stake-name">Est Win</div>
-                                        <input className="bs__input" type="number" value={(this.props.state.betList.variousStakeValue[getValLive(TournamentsObjLive, arr, 2).oddId] * getValLive(objType, arr, 2).value).toFixed(2) || 0} disabled />
-                                    </div>
-                                </div>
-                                : null}
-                        </div>
-                    </div>
-                );
-            }
-
-            // PREMATCH
-            if (arr.type === "prematch" && TournamentsObj.find(e => e.tournament.tournamentId == arr.tournamentId)) {
-
-                allOddsArray.push(parseFloat(getVal(TournamentsObj, arr, 4).value));
-                singlePossibleWinStake += parseFloat(getVal(TournamentsObj, arr, 4).value);
-
-                (multiplePossibleWinStake === 0)
-                    ? multiplePossibleWinStake = parseFloat(getVal(TournamentsObj, arr, 4).value)
-                    : multiplePossibleWinStake *= parseFloat(getVal(TournamentsObj, arr, 4).value);
-
-                if (typeof this.props.state.betList.variousStakeValue[getVal(TournamentsObj, arr, 4).oddId] !== "undefined") {
-                    possibleWinVariousStake += this.props.state.betList.variousStakeValue[getVal(TournamentsObj, arr, 4).oddId] * getVal(TournamentsObj, arr, 4).value;
-                }
-
-                (this.props.state.betList.bankersArray.includes(getVal(TournamentsObj, arr, 4).oddId))
-                    ? (bankers.includes(getVal(TournamentsObj, arr, 4).oddId)) ? null : bankers.push(String.fromCharCode(97 + index).toUpperCase())
-                    : null
-
-                return (
-                    <div className="bs__item ">
-                        <div className="bet-options">
-                            {currentTab === 2
-                                ? <Fragment>
-                                    <div className="system-letter">{String.fromCharCode(97 + index).toUpperCase()}</div>
-                                    <i className={
-                                        "bs-icon-banker " + (this.props.state.betList.bankersArray.includes(getVal(TournamentsObj, arr, 4).oddId) === true
-                                            ? "active"
-                                            : ((systemTipSize(tournamentsCount(TournamentsBets, TournamentsObj, TournamentsObjLive)) - this.props.state.betList.bankersArray.length) === 1 || this.props.state.betList.systemRadioValue === 2) ? "lock" : ""
-                                        )
-                                    } onClick={(e) => this.handleBankerClick(e, getVal(TournamentsObj, arr, 4).oddId)}></i>
-                                </Fragment>
-                                : null}
-                        </div>
-                        <div className="bet-event">
-                            <div className="row">
-                                <div className="bet-event__title">
-                                    {getVal(TournamentsObj, arr, 0).defaultName || (getVal(TournamentsObj, arr, 1).home + "-" + getVal(TournamentsObj, arr, 1).away)}
-                                </div>
-                                <div className="bs-options__option-odds">
-                                    <span className="bs-options__odds-change"></span>
-                                </div>
-                                <div className="bet-close icon" onClick={() => this.props.dispatch({ type: 'DELETE_ODD', payload: getVal(TournamentsObj, arr, 4).oddId })}>
-                                </div>
-                            </div>
-                            <div className="row space-between">
-                                <div className="bet-event__market">{getVal(TournamentsObj, arr, 4).oddtagTr}</div>
-                                <div className="bet-event__rate">{getVal(TournamentsObj, arr, 4).value}</div>
-                            </div>
-                            <div className="row space-between">
-                                <div className="bet-event__team">{getVal(TournamentsObj, arr, 3).discriminator || getVal(TournamentsObj, arr, 3).betTitleName}</div>
-                                <div className="bet-event__item-link"><span>
-                                    +{(getVal(TournamentsObj, arr, 1).betdomains)
-                                        ? getVal(TournamentsObj, arr, 1).betdomains.length
-                                        : Object.values(getVal(TournamentsObj, arr, 1).groups).reduce((a, b) => { return a + b.Markets.length }, 0)}
-                                </span></div>
-                            </div>
-                            {currentTab === 0 && this.props.state.betSlip.sameStake === false
-                                ? <div className="row bet-event__stakes space-between">
-                                    <div className="stake">
-                                        <div className="bs__stake-name">Stake</div>
-                                        <input className="bs__input" type="number" min="1" max="5000000"
-                                            value={this.props.state.betList.variousStakeValue[getVal(TournamentsObj, arr, 4).oddId]}
-                                            onChange={(e) => this.variousStakeHandleChange(e, getVal(TournamentsObj, arr, 4).oddId, getVal(TournamentsObj, arr, 4).value)}
-                                        />
-                                    </div>
-                                    <div className="estwin">
-                                        <div className="bs__stake-name">Est Win</div>
-                                        <input className="bs__input" type="number" value={(this.props.state.betList.variousStakeValue[getVal(TournamentsObj, arr, 4).oddId] * getVal(TournamentsObj, arr, 4).value).toFixed(2) || 0} disabled />
-                                    </div>
-                                </div>
-                                : null}
-                        </div>
-                    </div>
-                );
-            }
-        });
-
-        let lettersArr = [];
-        let coefsCalcArr = [];
-
-        // конвертация в буквы
-        { [...Array((allOddsArray).length)].map((x, i) => lettersArr.push(String.fromCharCode(65 + i))) }
-
-        systemCombinations(lettersArr, this.props.state.betList.systemRadioValue, bankers).map((val) => coefsCalcArr.push(coefsCalc(val, allOddsArray)));
 
         const calculateBet = () => {
             switch (currentTab) {
                 case 0:
-                    return (this.props.state.betSlip.sameStake === true)
-                        ? (singlePossibleWinStake * this.props.state.betList.stakeValue).toFixed(2)
+                    return (betSlip.sameStake === true)
+                        ? (singlePossibleWinStake * betList.stakeValue).toFixed(2)
                         : isNaN(possibleWinVariousStake) ? "0.00" : (possibleWinVariousStake).toFixed(2);
-                case 1: return (multiplePossibleWinStake * this.props.state.betList.stakeValue).toFixed(2);
-                case 2: return totalSystemCoef(coefsCalcArr) * this.props.state.betList.stakeValue
+                case 1:
+                    return (multiplePossibleWinStake * betList.stakeValue).toFixed(2);
+                case 2:
+                    return totalSystemCoef(coefsCalcArr) * betList.stakeValue // TODO: add totalSystemCoef
             }
         };
 
         const calculateBonus = (currentTab !== 0) ? (Number(calculateBet()) / 100 * bonusAmount).toFixed(2) : 0;
         const betAmount = (Number(calculateBonus) + Number(calculateBet())).toFixed(2);
 
-        let bankerOdds = TournamentsBets.filter((e) => this.props.state.betList.bankersArray.includes(e.oddId)).map((arr, index) => {
-            if (TournamentsObj.find(e => e.tournament.tournamentId == arr.tournamentId)) {
+        let bankerOdds = this.props.TournamentsBets.filter((e) => betList.bankersArray.includes(e.oddId)).map((arr) => {
+            if (this.props.TournamentsObj.find(e => e.tournament.tournamentId === arr.tournamentId)) {
                 let obj = {};
-                obj.oddTag = getVal(TournamentsObj, arr, 4).oddTag || getVal(TournamentsObj, arr, 4).oddtag;
-                obj.oddValue = getVal(TournamentsObj, arr, 4).value.toFixed(2);
-                obj.oddId = getVal(TournamentsObj, arr, 4).oddId;
+                obj.oddTag = getVal(this.props.TournamentsObj, arr, 4).oddTag || getVal(this.props.TournamentsObj, arr, 4).oddtag;
+                obj.oddValue = getVal(this.props.TournamentsObj, arr, 4).value.toFixed(2);
+                obj.oddId = getVal(this.props.TournamentsObj, arr, 4).oddId;
                 obj.oddSymbol = "";
-                obj.matchId = getVal(TournamentsObj, arr, 3).matchId || getVal(TournamentsObj, arr, 1).matchId;
-                return obj
+                obj.matchId = getVal(this.props.TournamentsObj, arr, 3).matchId || getVal(this.props.TournamentsObj, arr, 1).matchId;
+                return obj;
             }
         });
 
         const requestBody = (numOfArray) => {
             let obj = {};
+            let pageType = [];
 
-            let values = TournamentsBets.map((arr) => {
+            let values = this.props.TournamentsBets.map((arr, index) => {
+                let matchObj = this.props.state.betList.matchObj[index];
                 let obj = {};
-
-                if (arr.type === "prematch") {
-                    if (TournamentsObj.find(e => e.tournament.tournamentId == arr.tournamentId)) {
-                        obj.matchId = getVal(TournamentsObj, arr, 3).matchId || getVal(TournamentsObj, arr, 1).matchId;
-                        obj.btrMatchId = getVal(TournamentsObj, arr, 1).btrMatchId || getVal(TournamentsObj, arr, 1).btrmatchid;
-                        obj.tournamentId = getVal(TournamentsObj, arr, 1).tournamentId || getVal(TournamentsObj, arr, 1).touranmentId;
-                        obj.isOutrightType = getVal(TournamentsObj, arr, 1).isOutrightType;
-                        obj.betTitle = getVal(TournamentsObj, arr, 3).discriminator || getVal(TournamentsObj, arr, 3).betTitleName;
-                        obj.betTitleType = getVal(TournamentsObj, arr, 3).betTitleType;
-                        obj.odds = [
-                            {
-                                "value": getVal(TournamentsObj, arr, 4).value,
-                                "id": getVal(this.props.state.tournamentsData, arr, 4).oddId,
-                                "tag": getVal(TournamentsObj, arr, 4).oddTag || getVal(TournamentsObj, arr, 4).oddtag,
-                            }]
+                if (this.state.isVirtual) {
+                    if (matchObj && matchObj.hasOwnProperty("Test")) {
+                        obj.matchId = matchObj.MatchId;
+                        obj.btrMatchId = matchObj.BtrMatchId;
+                        // obj.tournamentId = matchObj.TournamentId;
+                        obj.isOutrightType = matchObj.IsOutrightType;
+                        obj.betTitle = matchObj.discriminator;
+                        obj.betTitleType = matchObj.BetTitleType;
+                        obj.odds = matchObj.Odds;
                     }
-                }
-                if (arr.type === "live") {
-                    if (Object.keys(TournamentsObjLive).some(e => e == arr.matchId)) {
-                        obj.matchId = getValLive(TournamentsObjLive, arr, 0).matchid;
-                        obj.btrMatchId = getValLive(TournamentsObjLive, arr, 0).btrmatchid;
-                        obj.tournamentId = getValLive(TournamentsObjLive, arr, 0).tournamentId;
-                        obj.isOutrightType = false;
-                        obj.betTitle = getValLive(TournamentsObjLive, arr, 1).betTitle;
-                        obj.betTitleType = getValLive(TournamentsObjLive, arr, 1).betTitleType;
-                        obj.odds = [
-                            {
-                                "value": getValLive(TournamentsObjLive, arr, 2).value,
-                                "id": getValLive(TournamentsObjLive, arr, 2).oddId,
-                                "tag": getValLive(TournamentsObjLive, arr, 2).oddtag,
-                            }]
+                } else {
+                    if (arr.type === "prematch") {
+                        if (matchObj && matchObj.hasOwnProperty("Test")) {
+                            obj.matchId = matchObj.MatchId;
+                            obj.btrMatchId = matchObj.BtrMatchId;
+                            // obj.tournamentId = matchObj.TournamentId;
+                            obj.isOutrightType = matchObj.IsOutrightType;
+                            obj.betTitle = matchObj.BetTitle;
+                            obj.betTitleType = matchObj.BetTitleType;
+                            obj.odds = matchObj.Odds;
+                        }
+                    }
+                    if (arr.type === "live") {
+                        if (matchObj && matchObj.hasOwnProperty("Test")) {
+                            obj.matchId = matchObj.MatchId;
+                            obj.btrMatchId = matchObj.BtrMatchId;
+                            // obj.tournamentId = matchObj.TournamentId;
+                            obj.isOutrightType = false;
+                            obj.betTitle = matchObj.BetTitle;
+                            obj.betTitleType = matchObj.BetTitleType;
+                            obj.odds = matchObj.Odds;
+                        }
                     }
                 }
                 return obj;
             });
 
+            if (currentTab === 0 && this.props.TournamentsBets[numOfArray]) {
+                let arr = this.props.TournamentsBets[numOfArray];
+                let type = this.props.TournamentsBets[numOfArray].type;
 
-            if (currentTab === 0) {
-                let arr = TournamentsBets[numOfArray];
-                let type = TournamentsBets[numOfArray].type;
+                if (this.props.TournamentsObj.find(e => e.tournament.tournamentId === arr.tournamentId) || Object.keys(this.props.TournamentsObjLive).some(e => e === arr.matchId)) {
+                    (betSlip.sameStake === false)
+                        ? obj.stakeAmount = betList.variousStakeValue[arr.oddId]
+                        : obj.stakeAmount = betList.stakeValue;
 
-
-                if (TournamentsObj.find(e => e.tournament.tournamentId == arr.tournamentId) || Object.keys(TournamentsObjLive).some(e => e == arr.matchId)) {
-                    if (this.props.state.betSlip.sameStake === false) {
-                        obj.stakeAmount = this.props.state.betList.variousStakeValue[arr.oddId];
-                        if (type === "prematch") obj.totalProbability = (this.props.state.betList.variousStakeValue[arr.oddId] * getVal(TournamentsObj, arr, 4).value).toFixed(2);
-                        if (type === "live") obj.totalProbability = (this.props.state.betList.variousStakeValue[arr.oddId] * getValLive(TournamentsObjLive, arr, 2).value).toFixed(2);
-                    }
-                    else {
-                        obj.stakeAmount = this.props.state.betList.stakeValue;
-                        if (type === "prematch") obj.totalProbability = getVal(TournamentsObj, arr, 4).value;
-                        if (type === "live") obj.totalProbability = getValLive(TournamentsObjLive, arr, 2).value;
-                    }
+                    if (type === "prematch") obj.totalProbability = getVal(this.props.TournamentsObj, arr, 4).value;
+                    if (type === "live") obj.totalProbability = getValLive(this.props.TournamentsObjLive, arr, 2).value;
+                    if (this.state.isVirtual) obj.totalProbability = getVal(this.props.TournamentsObj, arr, 4).value;
                 }
                 obj.values = [values[numOfArray]];
-            }
-            else {
-                obj.stakeAmount = this.props.state.betList.stakeValue;
+            } else {
+                obj.stakeAmount = betList.stakeValue;
                 obj.totalProbability = (currentTab === 1 || currentTab === 2) ? (currentTab === 1 ? multiplePossibleWinStake.toFixed(2) : totalSystemCoef(coefsCalcArr)) : "";
                 obj.values = values;
             }
             obj.betType = (currentTab === 1 || currentTab === 2) ? (currentTab === 1 ? "cmb" : "sys") : "sng";
-            obj.pageType = 0;
             obj.maxWin = betAmount;
-            obj.minBet = minStake;
-            if (currentTab !== 0) obj.bonusPercent = bonusAmount;
+            obj.minBet = minBet;
+
+            this.props.TournamentsBets.map((item, i, arr) => {
+                if (!pageType.includes(this.props.TournamentsBets[i].type))
+                    pageType.push(this.props.TournamentsBets[i].type)
+            })
+
+            if (!this.state.isVirtual) {
+                if (pageType.includes("prematch") && !pageType.includes("live")) obj.pageType = "0";
+                if (pageType.includes("live") && !pageType.includes("prematch")) obj.pageType = "1";
+                if (pageType.includes("live") && pageType.includes("prematch")) obj.pageType = "2";
+            } else {
+                obj.pageType = "10";
+            }
+
+            (currentTab !== 0) ? obj.bonusPercent = 1 + (bonusAmount / 100) : obj.bonusPercent = "1.00";
             if (currentTab !== 0) obj.bonusValue = calculateBonus;
             if (currentTab === 2) {
                 obj.bankers = bankerOdds;
-                obj.numberOfWinners = this.props.state.betList.systemRadioValue;
+                obj.numberOfWinners = betList.systemRadioValue;
             }
-
             return obj;
         }
+        /*  let systemCombos = [];
+          {
+              currentTab === 2
+                  ? systemCombos = systemCombinations(betList.lettersArr, betList.systemRadioValue, betList.bankersArray, betList.matchObj) : systemCombos = []
+          }*/
+        // const systemCombos = systemCombinations(betList.lettersArr, betList.systemRadioValue, betList.bankersArray,betList.matchObj);
+        //const systemCombos = [];
 
-        const systemCombos = systemCombinations(lettersArr, this.props.state.betList.systemRadioValue, bankers)
+        let quickBetEnabled = false;
+        if (Array.isArray(this.state.errorResponse)) {
+            this.state.errorResponse.map((errObj, index) => {
+                if (errObj.code === "enough_money_for_lower_rate" || errObj.code === "not_enough_money") {
+                    quickBetEnabled = true;
+                    return false;
+                }
+            });
+        }
+
+        const {isVirtual, onSameStakeChange, buttonsLock} = this.state;
         return (
             <div className="scroll-content">
                 <div className="bs-list__wrapper">
-                    {betSlipList}
+                    <BetSlipList
+                        isVirtual={isVirtual}
+                        onSameStakeChange={onSameStakeChange}
+                        onSetWinStake={(singlePossibleWinStake, multiplePossibleWinStake, possibleWinVariousStake) => this.onSetWinStake(singlePossibleWinStake, multiplePossibleWinStake, possibleWinVariousStake)}
+                        errorResponse={this.state.errorResponse}
+                        onSendSameStakeChange={(props) => this.onSendSameStakeChange(props)}
+                        buttonsLock={buttonsLock}
+                        sendState={(keyState, state) => this.setState({[keyState]: state})}
+
+                    />
                 </div>
 
                 {currentTab === 2
-                    ? <SystemList systemTipSize={systemTipSize} bankersArrayLength={this.props.state.betList.bankersArray.length} coefsCalcArr={coefsCalcArr} systemCombos={systemCombos} totalSystemCoef={totalSystemCoef} TournamentsObj={TournamentsObj} />
+                    ? <SystemList systemTipSize={systemTipSize} bankersArrayLength={betList.bankersArray.length}
+                                  coefsCalcArr={coefsCalcArr} systemCombos={systemCombos}
+                                  totalSystemCoef={totalSystemCoef} TournamentsObj={this.props.TournamentsObj}
+                                  toggleTrigger={this.toggleTrigger}
+
+                    />
                     : null}
 
 
                 <div className="bs-footer">
                     <div className="bs-footer__summary">
-                        <div className="row">
-                            <div className="bs-footer__summary--title">Possible win:</div>
-                            <div className="bs-footer__summary--total">
-                                {betAmount} XAF
+                        {currentTab !== 0
+                            ? <div className="row">
+                                <div className="bs-footer__summary--title">
+                                    <FormattedMessage id={"MainContainer.MatchContents.RightSidebar.BSForm.TotalOdds"}
+                                                      defaultMessage={"Total odds"}/>:
+                                </div>
+                                <div
+                                    className="bs-footer__summary--total">{(currentTab === 1) ? multiplePossibleWinStake.toFixed(2) : totalSystemCoef(coefsCalcArr)}</div>
                             </div>
+                            : null}
+                        <div className="row">
+                            <div className="bs-footer__summary--title">
+                                <FormattedMessage id={"MainContainer.MatchContents.RightSidebar.BSForm.PossibleWin"}
+                                                  defaultMessage={"Possible win"}/>:
+                            </div>
+                            <div
+                                className="bs-footer__summary--total">{betAmount} {this.props.state.userData.currency ? this.props.state.userData.currency :
+                                <FormattedMessage id="Global.Currency" defaultMessage="XAF"/>}</div>
                         </div>
                         {currentTab !== 0
                             ? <div className="row">
-                                <div className="bs-footer__summary--title">Bonus:</div>
-                                <div className="bs-footer__summary--total">{calculateBonus} XAF</div>
+                                <div className="bs-footer__summary--title">
+                                    <FormattedMessage id={"MainContainer.MatchContents.RightSidebar.BSForm.Bonus"}
+                                                      defaultMessage={"Bonus"}/>:
+                                </div>
+                                <div
+                                    className="bs-footer__summary--total">{calculateBonus} {this.props.state.userData.currency ? this.props.state.userData.currency :
+                                    <FormattedMessage id="Global.Currency" defaultMessage="XAF"/>}</div>
                             </div>
                             : null}
                     </div>
 
-                    {this.props.state.betSlip.advanced === true
-                        ? <div className="bs-footer__advanced-area">
-                            {currentTab !== 0
-                                ? <Fragment>
-                                    <div className="row">
-                                        <div className="bs-footer__advanced-area--title">Total odds</div><div className="bs-footer__advanced-area--total">
-                                            {(currentTab === 1) ? multiplePossibleWinStake.toFixed(2) : totalSystemCoef(coefsCalcArr)} XAF</div>
-                                    </div>
-                                </Fragment>
-                                : null}
-                            <div className="row">
-                                <div className="bs-footer__advanced-area--title">Min Bet</div>
-                                <div className="bs-footer__advanced-area--total">{minStake} XAF</div>
+                    {betSlip.advanced &&
+                    <div className="bs-footer__advanced-area">
+                        <div className="row">
+                            <div className="bs-footer__advanced-area--title">
+                                <FormattedMessage id={"MainContainer.MatchContents.RightSidebar.BSForm.MinBet"}
+                                                  defaultMessage={"Min Bet"}/>
                             </div>
-                            <div className="row">
-                                <div className="bs-footer__advanced-area--title">Max Bet</div>
-                                <div className="bs-footer__advanced-area--total">{maxStake} XAF</div>
-                            </div>
-                            <div className="row">
-                                <div className="bs-footer__advanced-area--title">Max Win</div>
-                                <div className="bs-footer__advanced-area--total">{maxWin} XAF</div>
-                            </div>
+                            <div
+                                className="bs-footer__advanced-area--total">{minBet} {this.props.state.userData.currency ? this.props.state.userData.currency :
+                                <FormattedMessage id="Global.Currency" defaultMessage="XAF"/>}</div>
                         </div>
-                        : null}
+                        <div className="row">
+                            <div className="bs-footer__advanced-area--title">
+                                <FormattedMessage id={"MainContainer.MatchContents.RightSidebar.BSForm.MaxBet"}
+                                                  defaultMessage={"Max Bet"}/>
+                            </div>
+                            <div
+                                className="bs-footer__advanced-area--total">{maxStake} {this.props.state.userData.currency ? this.props.state.userData.currency :
+                                <FormattedMessage id="Global.Currency" defaultMessage="XAF"/>}</div>
+                        </div>
+                        <div className="row">
+                            <div className="bs-footer__advanced-area--title">
+                                <FormattedMessage id={"MainContainer.MatchContents.RightSidebar.BSForm.MaxWin"}
+                                                  defaultMessage={"Max Win"}/>
+                            </div>
+                            <div
+                                className="bs-footer__advanced-area--total">{maxWin} {this.props.state.userData.currency ? this.props.state.userData.currency :
+                                <FormattedMessage id="Global.Currency" defaultMessage="XAF"/>}</div>
+                        </div>
+                    </div>
+                    }
 
-                    {this.alertBox(minStake, maxStake)}
-
-                    {this.props.state.betSlip.sameStake === true || currentTab > 0
-                        ? <div className="bs__stake">
-                            <div className="bs__stake--name">Stake</div>
+                    {(betSlip.sameStake || currentTab > 0) &&
+                        <div className="bs__stake">
+                            <div className="bs__stake--name">
+                                <FormattedMessage id={"MainContainer.MatchContents.RightSidebar.BSForm.Stake"} defaultMessage={"Stake"} />
+                            </div>
                             <div className="bs__stake--input">
-                                <input type="number" min="1" max="50000"
-                                    value={this.props.state.betList.stakeValue}
-                                    onChange={this.sameStakeHandleChange} />
+                                <input 
+                                    type="text"
+                                    value={betList.stakeValue}
+                                    onChange={this.sameStakeChange}
+                                    placeholder="0"
+                                    maxLength="6"
+                                    />
                             </div>
-                            <div className="bs__stake--currency">XAF</div>
+                            <div className="bs__stake--currency"> {this.props.state.userData.currency?this.props.state.userData.currency:<FormattedMessage id="Global.Currency" defaultMessage="XAF" />}</div>
                         </div>
-                        : null}
+                    
+                    }
 
+                    {
+                        (this.state.errorResponse.faultCode || !this.props.state.isAuthenticated)
+                        &&
+                        <BSAlertBox
+                            errorResponse={this.state.errorResponse}
+                            clearFaultCode={() => this.clearFaultCode()}
+                            placeBet={() => this.onSendBet(requestBody, allOddsArray, this.state.method)}
+                            isAuthenticated={this.props.state.isAuthenticated}
+                            setMinBonusStake={(props) => this.setMinBonusStake(props)}
+                        />
+                    }
+
+                    {
+                        (Array.isArray(this.state.errorResponse))
+                        && this.state.errorResponse.map(
+                            (errObj, index) => {
+                                return (
+                                    <BSAlertBox
+                                        errorResponse={errObj}
+                                        clearFaultCode={() => this.clearFaultCode()}
+                                        placeBet={() => this.onSendBet(requestBody, allOddsArray, "place")}
+                                        isAuthenticated={this.props.state.isAuthenticated}
+                                        setMinBonusStake={(props) => this.setMinBonusStake(props)}
+                                    />
+                                );
+                            }
+                        )
+                    }
+                    {
+                        // console.log(requestBody(this.props.state.betList.allOddsArray))
+                    }
                     <div className="bs-btn-block">
                         <div className="cell place-bet">
-                            <button className="button btn-place-bet" onClick={(e) => this.onPlaceBet(e, requestBody, allOddsArray)}>Place Bet</button>
+                            <QuickBetButton
+                                stake={betList.stakeValue}
+                                odds={allOddsArray}
+                                requestBody={this.props.state.isAuthenticated ? requestBody(this.props.state.betList.allOddsArray) : null}
+                            />
+
+                            {/*visible={(quickBetEnabled && this.props.state.isAuthenticated) || true TODO: remove TRUE}*/}
+
+                            {(this.state.errorResponse.faultCode === 154)
+                                ?
+                                <button
+                                    disabled={buttonsLock}
+                                    className="button add-funds"
+                                    onClick={() => this.props.history.push('/profile/mywallet')}
+                                >
+                                    <FormattedMessage id=
+                                                          {"MainContainer.MatchContents.RightSidebar.BSForm.Button.AddFunds"}
+                                    />
+                                </button>
+                                :
+                                <button
+                                    disabled={buttonsLock || !this.props.state.isAuthenticated}
+                                    className={"button btn-place-bet" + (this.state.placeBetPreloader ? " loading__icon" : "")}
+                                    onClick={
+                                        (!this.props.buttonsLock) ? () => this.onSendBet(requestBody, allOddsArray, "place") : null}>
+                                    {(!this.state.placeBetPreloader &&
+                                        <FormattedMessage id=
+                                                              {"MainContainer.MatchContents.RightSidebar.BSForm.Button.PlaceBet"}
+                                        />)}
+                                </button>
+                            }
                         </div>
                     </div>
                     <div className="bs-btn-block bt">
                         <div className="cell">
-                            <button className="button bs-btn--clear" onClick={(e) => this.onClear()}>Clear</button>
+                            <button className="button bs-btn--clear" onClick={() => this.onClearBetSlip()}>
+                                <FormattedMessage id={"MainContainer.MatchContents.RightSidebar.BSForm.Button.Clear"}
+                                                  defaultMessage={"Clear"}/></button>
                         </div>
                         <div className="cell">
-                            <button className="button bs-btn--save">Save</button>
+                            <button
+                                className={"button bs-btn--save" + (this.state.savePreloader ? " loading__icon" : "")}
+                                disabled={this.state.disabledSave || buttonsLock}
+                                onClick={(!this.props.buttonsLock) ? () => this.onSendBet(requestBody, allOddsArray, "save") : null}>
+                                {(!this.state.savePreloader &&
+                                    <FormattedMessage
+                                        id={"MainContainer.MatchContents.RightSidebar.BSForm.Button.Save"}/>
+                                )}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -515,14 +846,10 @@ class BSForm extends Component {
 const mapStateToProps = (state) => {
     return {
         state: {
-            bsTabs: state.bsTabs,
+            isAuthenticated: state.isAuthenticated,
             betList: state.betList,
             betSlip: state.betSlip,
-            odds: state.odds,
-            tournamentsData: state.tournamentsData,
-            virtualOdds: state.virtualOdds,
-            virtualTournamentsData: state.virtualTournamentsData,
-            liveMatches: state.liveMatches,
+            userData: state.userData.currentUserData
         }
     }
 }

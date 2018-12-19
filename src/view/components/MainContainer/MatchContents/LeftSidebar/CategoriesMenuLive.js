@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
+import Hidden from '@material-ui/core/Hidden';
 
 class CategoriesMenuLive extends React.PureComponent {
 
@@ -12,7 +13,7 @@ class CategoriesMenuLive extends React.PureComponent {
     }
 
     handleMenuChoose = (sport) => {
-        if (sport == this.props.state.sportId)
+        if (sport === this.props.state.sportId)
             this.props.dispatch({ type: 'CLEAR_SPORT_ID' })
         else
             this.props.dispatch({ type: 'ADD_SPORT_ID', payload: sport })
@@ -21,10 +22,13 @@ class CategoriesMenuLive extends React.PureComponent {
     render() {
 
         return (
-            <div className="categories-menu__container mini scroll" id="sportMenuContainer">
+            <Hidden mdDown>
+                <div className="categories-menu__container mini scroll" id="sportMenuContainer">
                 <div className="categories-menu__inner sport-categories">
                     <div className="header__sport-menu all-sport-menu" id="all-sport-menu">
-                        <div className="sport-menu__title">Live</div>
+                        <div className="sport-menu__title">
+                            <FormattedMessage id="MainContainer.MatchContents.LeftSidebar.CategoriesMenuLive.Title" defaultMessage="Live"/>
+                        </div>
                         <div className="sport-menu__collapse-mini" id="sportMenuMiniToggler"></div>
                     </div>
 
@@ -66,6 +70,7 @@ class CategoriesMenuLive extends React.PureComponent {
                     </ul>
                 </div>
             </div>
+            </Hidden>
         )
     }
 }

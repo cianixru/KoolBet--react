@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from "react-redux";
+import {FormattedMessage} from "react-intl";
 
 class FormContent extends React.Component {
     render() {
@@ -7,11 +8,11 @@ class FormContent extends React.Component {
             <fieldset>
                 {/* {this.props.state.bsTabs} */}
                 <input type="checkbox" name="advanced" id="advanced" />
-                <label htmlFor="advanced">Advanced</label>
+                <label htmlFor="advanced"><FormattedMessage id="MainContainer.MatchContents.RightSidebar.FormContent.Advanced" defaultMessage="Advanced"/></label>
                 {this.props.state.bsTabs === 0
                     ? <span>
                         <input type="checkbox" name="same_stake" id="same_stake" />
-                        <label htmlFor="same_stake">Same Stake</label>
+                        <label htmlFor="same_stake"><FormattedMessage id="MainContainer.MatchContents.RightSidebar.FormContent.SameStake" defaultMessage="Same Stake"/></label>
                     </span>
                     : null}
                 <MatchList {...this.props} />

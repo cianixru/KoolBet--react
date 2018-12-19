@@ -1,0 +1,34 @@
+image: goforbroke1006/pbt-node:8.14.0-jessie
+
+cache:
+  key: betting-reactjs-superapp-2
+  paths:
+  - build/
+  - node_modules/
+
+before_script:
+- npm install --dev
+
+testing:
+  tags:
+  - npm
+  stage: test
+  script:
+  - pwd
+  - ls -lah ./
+  - npm test
+  except:
+  - master
+  - staging5
+
+staging-5-deploy:
+  tags:
+  - npm
+  stage: deploy
+  only:
+  - staging5
+  script:
+  - npm run build-ci-linux
+  - export SSHPASS=$DEMO5_FRONT_PASSWORD
+  - sshpass -e scp -o stricthostkeychecking=no -r build/. $DEMO5_FRONT_USERNAME@$DEMO5_FRONT_HOST:/www/betting-reactjs-superapp
+

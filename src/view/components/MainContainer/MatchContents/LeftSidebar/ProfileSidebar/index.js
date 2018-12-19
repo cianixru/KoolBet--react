@@ -1,58 +1,76 @@
 import React, { Component } from 'react';
-import { NavLink, withRouter } from 'react-router-dom'
+import { connect } from "react-redux";
+
+import { NavLink } from 'react-router-dom'
+import messages from "./messages.lang";
+import { FormattedMessage } from "react-intl";
+import { deleteCookie } from "./../../../../../../view/Utils/Cookies";
 
 class ProfileSidebar extends Component {
+    handleLogout = () => {
+        this.setState({ open: false });
+        this.props.dispatch({ type: 'AUTHORIZATION', payload: false });
+        this.props.dispatch({type: 'UPDATE_CURRENT_USER_DATA', data: {}});
+        deleteCookie('token')
+    };
     render() {
+        const links = [
+            {
+                label: "My account",
+                ico: "myaccount__icon",
+                url: "/profile/myaccount",
+            }, {
+                label: "My bets",
+                ico: "mybets__icon",
+                url: "/profile/mybets",
+            }, {
+                label: "Transaction",
+                ico: "transaction__icon",
+                url: "/profile/transaction",
+            }, {
+                label: "My wallet",
+                ico: "mywallet__icon",
+                url: "/profile/mywallet",
+            }, {
+                label: "Affiliate",
+                ico: "affiliate__icon",
+                url: "/profile/affiliate",
+            }
+        ];
         return (
             <div className="profile__sidebar is-transition-overlap is-closed" id="profileSidebar">
                 <div className="sidebar__inner">
                     <ul className="sidebar__menu vertical menu accordion-menu">
-
-                        <li>
-                            <NavLink to={"/profile/myaccount"} activeClassName="is-active">
-                                <i className="myaccount__icon"></i>
-                                My account
-                            </NavLink>
-                        </li>
-
-                        <li>
-                            <NavLink to={"/profile/mybets"} activeClassName="is-active">
-                                <i className="mybets__icon"></i>
-                                My bets
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink to={"/profile/transaction"} activeClassName="is-active">
-                                <i className="transaction__icon"></i>
-                                Transaction
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink to={"/profile/mywallet"} activeClassName="is-active">
-                                <i className="mywallet__icon"></i>
-                                My wallet
-                            </NavLink>
-                            {/* <ul className="menu vertical nested">
-                                <li>
-                                    <a href="profile_add-funds.html">Add funds</a>
+                        {links.map((e, index) => {
+                            return (
+                                <li key={index}>
+                                    <NavLink to={e.url} activeClassName="is-active">
+                                        <i className={e.ico}></i>
+                                        <FormattedMessage {...messages[e.label]} />
+                                    </NavLink>
                                 </li>
-                                <li>
-                                    <a href="profile_transactions-history.html">TRANSACTION HISTORY</a>
-                                </li>
-                            </ul> */}
-                        </li>
+                            )
+                        })}
                         <li>
-                            <NavLink to={"/profile/affiliate"} activeClassName="is-active">
-                                <i className="affiliate__icon"></i>
-                                Affiliate
-                            </NavLink>
+                            <a onClick={this.handleLogout}>
+                                <i className="logout__icon"></i>
+                                Logout
+                            </a>
                         </li>
+
                     </ul>
                 </div>
             </div>
-
-        );
+        )
     }
 }
 
-export default ProfileSidebar;
+function mapStateToProps(state) {
+    return {
+        state: {
+            isAuthenticated: state.isAuthenticated,
+        }
+    }
+}
+
+export default connect(mapStateToProps)(ProfileSidebar)

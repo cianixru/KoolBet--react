@@ -17,14 +17,14 @@ export default function oddId(state = initialState, action) {
         }
 
         case ('DELETE_VIRTUAL_ODD'): {
-            return state.filter(item => item.oddId != action.payload)
+            return state.filter(item => item.oddId !== action.payload)
         }
 
         case ('DELETE_TOURNAMENT_VIRTUAL_ODDS'): {
             return state.filter(item => {
                 console.log(item.tournamentId +'/'+ action.payload);
 
-                return item.tournamentId != action.payload
+                return item.tournamentId !== action.payload
             })
         }
 

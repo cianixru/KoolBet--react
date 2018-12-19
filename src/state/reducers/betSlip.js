@@ -1,15 +1,15 @@
 let initialState = {
-    tab: 0,
+    currentTab: 0,
     advanced: false,
     sameStake: false,
 }
 
 export default function betslip(state = initialState, action) {
     switch (action.type) {
-        case 'BETS_TABS': {
+        case 'CURRENT_TAB': {
             return {
                 ...state,
-                tab: action.payload
+                currentTab: action.payload
             }
         }
         case 'CHECK_ADVANCED': {

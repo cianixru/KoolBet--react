@@ -10,9 +10,11 @@ export default function subscribedVG(state = initialState, action) {
                 ...state, action.payload
             ];
         }
+
         case ('DELETE_SUBSCRIBE'): {
             return state.filter(item => { return item !== action.payload });
         }
+
         case ('CLEAR_SUBSCRIBE_LIST'): {
             return [];
         }

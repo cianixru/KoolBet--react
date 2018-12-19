@@ -1,0 +1,201 @@
+[{
+    "title": "Help",
+    "category": "help",
+    "items": [{
+        "url": "/pages/help/sports_betting",
+        "dir": "html/help/en/how-to-bet",
+        "label": "How to bet"
+    }, {
+        "url": "/pages/help/general-rules",
+        "dir": "html/help/en/general-rules",
+        "label": "General rules"
+    }, {
+        "url": "/pages/help/soccer",
+        "dir": "html/help/en/soccer",
+        "label": "Soccer"
+    }, {
+        "url": "/pages/help/basketball",
+        "dir": "html/help/en/basketball",
+        "label": "Basketball"
+    }, {
+        "url": "/pages/help/ice-hockey",
+        "dir": "html/help/en/ice-hockey",
+        "label": "Ice hockey"
+    }, {
+        "url": "/pages/help/handball",
+        "dir": "html/help/en/handball",
+        "label": "Handball"
+    }, {
+        "url": "/pages/help/tennis",
+        "dir": "html/help/en/tennis",
+        "label": "Tennis"
+    }, {
+        "url": "/pages/help/volleyball",
+        "dir": "html/help/en/volleyball",
+        "label": "Volleyball"
+    }, {
+        "url": "/pages/help/american-football",
+        "dir": "html/help/en/american-football",
+        "label": "American football"
+    }, {
+        "url": "/pages/help/aussie-rules",
+        "dir": "html/help/en/aussie-rules",
+        "label": "Aussie rules"
+    }, {
+        "url": "/pages/help/bandy",
+        "dir": "html/help/en/bandy",
+        "label": "Bandy"
+    }, {
+        "url": "/pages/help/baseball",
+        "dir": "html/help/en/baseball",
+        "label": "Baseball"
+    }, {
+        "url": "/pages/help/beach-soccer",
+        "dir": "html/help/en/beach-soccer",
+        "label": "Beach Soccer"
+    }, {
+        "url": "/pages/help/curling",
+        "dir": "html/help/en/curling",
+        "label": "Curling"
+    }, {
+        "url": "/pages/help/cycling",
+        "dir": "html/help/en/cycling",
+        "label": "Cycling"
+    }, {
+        "url": "/pages/help/darts",
+        "dir": "html/help/en/darts",
+        "label": "Darts"
+    }, {
+        "url": "/pages/help/floorball",
+        "dir": "html/help/en/floorball",
+        "label": "Floorball"
+    }, {
+        "url": "/pages/help/futsal",
+        "dir": "html/help/en/futsal",
+        "label": "Futsal"
+    }, {
+        "url": "/pages/help/golf",
+        "dir": "html/help/en/golf",
+        "label": "Golf"
+    }, {
+        "url": "/pages/help/motorsport",
+        "dir": "html/help/en/motorsport",
+        "label": "Motor Sport"
+    }, {
+        "url": "/pages/help/pesapallo",
+        "dir": "html/help/en/pesapallo",
+        "label": "Pesapallo"
+    }, {
+        "url": "/pages/help/rugby",
+        "dir": "html/help/en/rugby",
+        "label": "Rugby"
+    }, {
+        "url": "/pages/help/snooker",
+        "dir": "html/help/en/snooker",
+        "label": "Snooker"
+    }, {
+        "url": "/pages/help/waterpolo",
+        "dir": "html/help/en/waterpolo",
+        "label": "Waterpolo"
+    }, {
+        "url": "/pages/help/winter-sports",
+        "dir": "html/help/en/winter-sports",
+        "label": "Winter sport"
+    }, {
+        "url": "/pages/help/general-rules-live",
+        "dir": "html/help/en/general-rules-live",
+        "label": "General rules"
+    }, {
+        "url": "/pages/help/special-rules-live",
+        "dir": "html/help/en/special-rules-live",
+        "label": "Special rules"
+    }, {
+        "url": "/pages/help/soccer-live",
+        "dir": "html/help/en/soccer-live",
+        "label": "Soccer"
+    }, {
+        "url": "/pages/help/tennis-live",
+        "dir": "html/help/en/tennis-live",
+        "label": "Tennis"
+    }, {
+        "url": "/pages/help/basketball-live",
+        "dir": "html/help/en/basketball-live",
+        "label": "Basketball"
+    }, {
+        "url": "/pages/help/handball-live",
+        "dir": "html/help/en/handball-live",
+        "label": "Handball"
+    }, {
+        "url": "/pages/help/volleyball-live",
+        "dir": "html/help/en/volleyball-live",
+        "label": "Voleyball"
+    }, {
+        "url": "/pages/help/beachvolleyball-live",
+        "dir": "html/help/en/beachvolleyball-live",
+        "label": "Beach voleyball"
+    }, {
+        "url": "/pages/help/futsal-live",
+        "dir": "html/help/en/futsal-live",
+        "label": "Futsal"
+    }, {
+        "url": "/pages/help/badminton-live",
+        "dir": "html/help/en/badminton-live",
+        "label": "Badminton"
+    }, {
+        "url": "/pages/help/rugby-union-live",
+        "dir": "html/help/en/rugby-union-live",
+        "label": "Rugby union"
+    }, {
+        "url": "/pages/help/darts-live",
+        "dir": "html/help/en/darts-live",
+        "label": "Darts"
+    }, {
+        "url": "/pages/help/snooker-live",
+        "dir": "html/help/en/snooker-live",
+        "label": "Snooker"
+    }, {
+        "url": "/pages/help/table-tennis-live",
+        "dir": "html/help/en/table-tennis-live",
+        "label": "Table tennis"
+    }, {
+        "url": "/pages/help/cricket-live",
+        "dir": "html/help/en/cricket-live",
+        "label": "Cricket"
+    }]
+}, {
+    "title": "Information",
+    "category": "info",
+    "items": [{
+        "url": "/pages/info/bonus",
+        "dir": "html/info/en/bonus",
+        "label": "Bonus"
+    }, {
+        "url": "/pages/info/responsible-gaming-information",
+        "dir": "html/info/en/responsible-gaming-information",
+        "label": "Betting Rules (Responsible Gambling Policy)"
+    }, {
+        "url": "/pages/info/sport-betting-rules-general",
+        "dir": "html/info/en/sport-betting-rules-general",
+        "label": "Betting Rules (General)"
+    }, {
+        "url": "/pages/info/sport-betting-rules-prematch",
+        "dir": "html/info/en/sport-betting-rules-prematch",
+        "label": "Betting Rules (Pre-Match)"
+    }, {
+        "url": "/pages/info/faq",
+        "dir": "html/info/en/faq",
+        "label": "FAQ"
+    }]
+}, {
+    "title": "About us",
+    "category": "about",
+    "items": [{
+        "url": "/pages/about/about-us",
+        "dir": "html/about/en/about",
+        "label": "About us"
+    }, {
+        "url": "/pages/about/contact-us",
+        "dir": "html/about/en/contact-us",
+        "label": "Contact Us"
+    }]
+}]

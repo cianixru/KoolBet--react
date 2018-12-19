@@ -1,0 +1,1 @@
+export let SportWS_Postfix = '/'+(-new Date().getTimezoneOffset());

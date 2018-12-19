@@ -1,32 +1,41 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component, Fragment } from 'react';
+import { connect } from "react-redux";
 
 import IsAuthenticated from './IsAuthenticated';
 import NotAuthenticated from './NotAuthenticated';
 
 class MicroAccount extends Component {
-    render() {
-        const SwitchMicroAccount = (auth) => {
-            if (auth) {
-                return <IsAuthenticated />
-            } else {
-                return <NotAuthenticated />
-            }
+    state = {};
+
+    static getDerivedStateFromProps(props, state) {
+        if(props.state.isAuthenticated !== state.prevIsAuthenticated) {
+            props.Authenticated(props.state.isAuthenticated);
+            return {
+                ...state,
+                isAuthenticated: props.state.isAuthenticated,
+                prevIsAuthenticated: props.state.isAuthenticated,
+            }    
         }
+        return null
+    }
+    render() {
         return (
-            <React.Fragment>
-                {SwitchMicroAccount(this.props.state.isAuthenticated)}
-            </React.Fragment>
+            <Fragment>
+                {
+                    (this.state.isAuthenticated)
+                        ? <IsAuthenticated /> 
+                        : <div className="hide-for-medium-dw"><NotAuthenticated /></div>
+                }
+            </Fragment>
         )
     }
 }
-
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
     return {
+        ...ownProps,
         state: {
             isAuthenticated: state.isAuthenticated,
         }
-    };
+    }
 }
-
 export default connect(mapStateToProps)(MicroAccount);

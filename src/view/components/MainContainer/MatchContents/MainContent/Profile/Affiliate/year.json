@@ -1,0 +1,112 @@
+{
+  "status": "Success",
+  "errorMessage": null,
+  "response": [
+    {
+      "year": 2018,
+      "month": 1,
+      "day": 0,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 2,
+      "day": 0,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 3,
+      "day": 0,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 4,
+      "day": 0,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 5,
+      "day": 0,
+      "uniqueUsers": 1,
+      "commissions": [
+        {
+          "type": 1,
+          "betAmount": 1.0,
+          "sum": 2.0,
+          "value": 2.0
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "month": 6,
+      "day": 0,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 7,
+      "day": 0,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 8,
+      "day": 0,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 9,
+      "day": 0,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 10,
+      "day": 0,
+      "uniqueUsers": 1,
+      "commissions": [
+        {
+          "type": 2,
+          "betAmount": 1.0,
+          "sum": 0.01,
+          "value": 0.99
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 0,
+      "uniqueUsers": 1,
+      "commissions": [
+        {
+          "type": 2,
+          "betAmount": 1.0,
+          "sum": 0.1,
+          "value": 0.99
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "month": 12,
+      "day": 0,
+      "uniqueUsers": 0,
+      "commissions": []
+    }
+  ],
+  "errorCode": null
+}

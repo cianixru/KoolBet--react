@@ -1,0 +1,237 @@
+{
+  "status": "Success",
+  "errorMessage": null,
+  "response": [
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 1,
+      "uniqueUsers": 1,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 2,
+      "uniqueUsers": 1,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 3,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 4,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 5,
+      "uniqueUsers": 1,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 6,
+      "uniqueUsers": 1,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 7,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 8,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 9,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 10,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 11,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 12,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 13,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 14,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 15,
+      "uniqueUsers": 1,
+      "commissions": [
+        {
+          "type": 2,
+          "betAmount": 1.0,
+          "sum": 0.1,
+          "value": 0.99
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 16,
+      "uniqueUsers": 1,
+      "commissions": [
+        {
+          "type": 2,
+          "betAmount": 1.0,
+          "sum": 0.1,
+          "value": 0.99
+        },
+        {
+          "type": 1,
+          "betAmount": 2.0,
+          "sum": 0.5,
+          "value": 4.99
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 17,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 18,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 19,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 20,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 21,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 22,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 23,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 24,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 25,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 26,
+      "uniqueUsers": 1,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 27,
+      "uniqueUsers": 1,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 28,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 29,
+      "uniqueUsers": 0,
+      "commissions": []
+    },
+    {
+      "year": 2018,
+      "month": 11,
+      "day": 30,
+      "uniqueUsers": 0,
+      "commissions": []
+    }
+  ],
+  "errorCode": null
+}

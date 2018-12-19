@@ -11,7 +11,7 @@ export default function tournamentsData(state = initialState, action) {
         }
 
         case ('DELETE_TOURNAMENTS_DATA'): {
-            return state = state.filter(e => e.tournament.tournamentId != action.payload); //.tournament.tournamentId ?
+            return state = state.filter(e => e.tournament.tournamentId !== action.payload); //.tournament.tournamentId ?
         }
 
         case ('CLEAR_TOURNAMENTS_DATA'): {

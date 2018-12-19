@@ -1,8 +1,10 @@
 import React from 'react';
 import Hidden from '@material-ui/core/Hidden';
 import { NavLink, withRouter } from 'react-router-dom'
+import messages from "./messages.lang";
+import {FormattedMessage} from "react-intl";
 
-let Tabs = ['sport', 'live', 'results','virtual'];
+let Tabs = ['sport', 'live', 'results', 'virtual'];
 
 const ContentTabs = ({ history, location }) => (
     <Hidden smDown>
@@ -12,7 +14,7 @@ const ContentTabs = ({ history, location }) => (
                     return (
                         <div className="menu__item" key={index}>
                             <NavLink to={"/" + val} activeClassName="active">
-                                {val} 
+                                <FormattedMessage {...messages[val]} />
                             </NavLink>
                         </div>
                     )

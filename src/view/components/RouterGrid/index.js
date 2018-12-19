@@ -1,33 +1,31 @@
 import React, { Component } from 'react';
 import { Route, withRouter, Redirect, Switch } from 'react-router-dom'
 import { connect } from "react-redux";
+import asyncComponent from "view/components/AsyncComponent";
 
-import routes from "config/Routes"
+import routes from "./../../../config/Routes"
 
-import LeftSidebar from 'view/components/MainContainer/MatchContents/LeftSidebar/index';
-import MainContent from 'view/components/MainContainer/MatchContents/MainContent/index';
+import LeftSidebar from 'view/components/MainContainer/MatchContents/LeftSidebar';
+import MainContent from 'view/components/MainContainer/MatchContents/MainContent';
 
-import MatchDetails from 'view/components/MainContainer/MatchContents/MainContent/MatchDetails/index';
-
+// import MatchDetails from 'view/components/MainContainer/MatchContents/MainContent/MatchDetails';
 // import CleanMatchData from 'view/Utils/CleanMatchData';
+
 /* Connects */
-import SportWebSocketConnect from 'connectors/SportWebSocketConnect';
-import VirtualWebSocketConnect from 'connectors/VirtualWebSocketConnect';
-
-
+const SportWebSocketConnect  = asyncComponent(() => import('connectors/SportWebSocketConnect'));
+const VirtualWebSocketConnect  = asyncComponent(() => import('connectors/VirtualWebSocketConnect'));
 
 class RouterGrid extends Component {
     render() {
+        const { isAuthenticated } = this.props.state;
         return (
             <div className="page__container">
-                <div className="page-grid">
+                <div className={"page-grid" + ((isAuthenticated) ? " is-authorised" : "")}>
 
                     <Route exact path="/" component={() => <Redirect to="/sport" />} />
-
-                    {
-                        (this.props.state.isAuthenticated)
-                            ? ''
-                            : <Route path="/profile" component={() => <Redirect to="/login" />} />
+                    {(isAuthenticated)
+                        ? ''
+                        : <Route path="/profile" component={() => <Redirect to={"/login?redirect="+window.location.pathname} />} />
                     }
 
                     {/* Left Sidebar */}
@@ -57,7 +55,7 @@ class RouterGrid extends Component {
                     </MainContent>
 
                     <Route exact path="/profile" component={() => <Redirect to="/profile/myaccount" />} />
-                    
+
                     {/* Right Sidebar */}
                     {routes.map((route, index) => (
                         <Route
@@ -94,7 +92,7 @@ class RouterGrid extends Component {
                         <Route exact path="/" render={null} />
                         <Route path="*" render={() => <SportWebSocketConnect channel={this.props.location.pathname.replace('/', '')} />} />
                     </Switch>
-
+                    
                 </div>
             </div>
         );
@@ -105,7 +103,6 @@ function mapStateToProps(state) {
     return {
         state: {
             isAuthenticated: state.isAuthenticated,
-
         }
     }
 }

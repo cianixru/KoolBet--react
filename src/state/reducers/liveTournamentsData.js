@@ -11,7 +11,7 @@
 //         }
 
 //         case ('DELETE_LIVE_TOURNAMENTS_DATA'): {
-//             return state = state.filter(e => e.tournament.id != action.payload); //.tournament.id ?
+//             return state = state.filter(e => e.tournament.id !== action.payload); //.tournament.id ?
 //         }
 
 //         case ('CLEAR_LIVE_TOURNAMENTS_DATA'): {

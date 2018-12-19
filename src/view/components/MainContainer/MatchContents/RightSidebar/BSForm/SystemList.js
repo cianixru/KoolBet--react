@@ -1,94 +1,125 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { getSystemBetsCount, tournamentsCount, systemTipSize } from './../BSLogic';
+import React, {PureComponent} from 'react';
+import {connect} from 'react-redux';
+
+import {getSystemBetsCount, systemCombinations, systemTipSize} from './../BSLogic';
 import Modal from '@material-ui/core/Modal';
-import ModalSystemRows from './ModalSystemRows';
-import { Radio } from 'antd';
+import {Radio} from 'antd';
 import './modal.css';
 import './BSForm.css';
 
-const SystemGroup = Radio.Group;
+const SystemsRadioGroup = Radio.Group;
 
-class SystemList extends Component {
+class SystemList extends PureComponent {
     state = {
         modalOpen: false,
+        calcTrigger:false,
+        combos:[]
     }
+
     static getDerivedStateFromProps(props, state) {
 
-        if (props.state.betList.bankersArray !== state.prevBankerArray) {
-            if ((systemTipSize(tournamentsCount(props.state.odds, props.TournamentsObj)) - props.state.betList.bankersArray.length) + 1 < props.state.betList.systemRadioValue && props.state.betList.systemRadioValue !== 2)
-                props.dispatch({ type: 'SYSTEM_RADIO_VALUE', payload: (systemTipSize(tournamentsCount(props.state.odds, props.TournamentsObj, props.TournamentsObj)) - props.state.betList.bankersArray.length) + 1 })
-        }
+        if (props.state.betList.tournamentsCount.length - 1 < props.state.betList.systemRadioValue)
+            props.dispatch({type: 'SYSTEM_RADIO_VALUE', payload: props.state.betList.tournamentsCount.length - 1})
 
-        return { ...state, prevBankerArray: props.state.betList.bankersArray }
+        if (props.state.betList.bankersArray !== state.prevBankerArray) {
+            if ((systemTipSize(props.state.betList.tournamentsCount) - props.state.betList.bankersArray.length) + 1 < props.state.betList.systemRadioValue && props.state.betList.systemRadioValue !== 2)
+                props.dispatch({
+                    type: 'SYSTEM_RADIO_VALUE',
+                    payload: (systemTipSize(props.state.betList.tournamentsCount) - props.state.betList.bankersArray.length) + 1
+                })
+        }
+        return {prevBankerArray: props.state.betList.bankersArray}
     }
+
     handleModalOpen = (sysNum) => {
-        this.props.dispatch({ type: 'SYSTEM_RADIO_VALUE', payload: sysNum })
-        this.setState({ modalOpen: true });
+        this.props.dispatch({type: 'SYSTEM_RADIO_VALUE', payload: sysNum})
+        let systemCombos = systemCombinations(this.props.state.betList.lettersArr, this.props.state.betList.systemRadioValue, this.props.state.betList.bankersArray,this.props.state.betList.matchObj);
+
+        this.setState({modalOpen: true,combos:systemCombos});
+
     };
     handleModalClose = () => {
-        this.setState({ modalOpen: false });
+        this.setState({modalOpen: false});
     };
     onChangeSystemRadio = (e) => {
-        this.props.dispatch({ type: 'SYSTEM_RADIO_VALUE', payload: e.target.value })
+        this.props.dispatch({type: 'SYSTEM_RADIO_VALUE', payload: e.target.value})
     }
 
     render() {
+        let addLetter = '';
+        if(Array.isArray(this.props.state.betList.bankersArray)){
+            this.props.state.betList.bankersArray.map((el) => {
+                let letterIndex = this.props.state.betList.matchObj.findIndex(e => {
+                    return e.OddId === el
+                });
+                if (letterIndex != -1) {
+                    addLetter = addLetter +this.props.state.betList.lettersArr[letterIndex].toUpperCase()
+                }
 
-        let tournamentsCountVal = tournamentsCount(this.props.state.odds, this.props.TournamentsObj);
-        let tournamentsCountLength = (systemTipSize(tournamentsCountVal) > 1) ? systemTipSize(tournamentsCountVal) - this.props.bankersArrayLength : systemTipSize(tournamentsCountVal);
+            });
+        }
 
-        // const SystemListItem = (props) => {
-        //     return (
-        //         <li class="betslip-system__radio-item">
-        //             <Radio value={props.index + 1}>System {(props.index + 1)}/{props.tournamentsCount.length - props.bankersArrayLength}
-        //                 <span class="betslip-system__radio-item-help">
-        //                     <div onClick={() => this.handleModalOpen(props.index + 1)} className="combinations-btn">{getSystemBetsCount(props.index + 1, props.tournamentsCount.length - props.bankersArrayLength)} bets</div>
-        //                 </span>
-        //             </Radio>
-        //         </li>
-        //     )
-        // }
+        const {systemRadioValue, tournamentsCount} = this.props.state.betList;
+        const {bankersArrayLength, coefsCalcArr, totalSystemCoef} = this.props;
+
+         let tournamentsCountVal = tournamentsCount;
+        let tournamentsCountLength = (systemTipSize(tournamentsCountVal) > 1) ? systemTipSize(tournamentsCountVal) - bankersArrayLength : systemTipSize(tournamentsCountVal);
 
         return (
-            <SystemGroup
+            <SystemsRadioGroup
                 onChange={this.onChangeSystemRadio}
-                value={
-                    this.props.state.betList.systemRadioValue
-                }>
+                value={systemRadioValue}>
                 <div className="systems-list">
                     <ul>
-                        {/* <SystemListItem key={index + 1} index={index + 1} systemTipSize={tournamentsCountLength} tournamentsCount={tournamentsCountVal} bankersArrayLength={this.props.bankersArrayLength} /> */}
                         {[...Array(tournamentsCountLength)].map((number, index) =>
-                            <li class="betslip-system__radio-item">
-                                <Radio value={index + 2}>System {(index + 2)}/{tournamentsCountVal.length - this.props.bankersArrayLength}
-                                    <span class="betslip-system__radio-item-help">
-                                        <div onClick={() => this.handleModalOpen(index + 2)} className="combinations-btn">{getSystemBetsCount(index + 2, tournamentsCountVal.length - this.props.bankersArrayLength)} bets</div>
+                            <li className="betslip-system__radio-item" key={index} onClick={  this.props.toggleTrigger}>
+                                <Radio
+                                    value={index + 2}
+                             >
+                                    System {(index + 2)}/{tournamentsCountVal.length - bankersArrayLength}
+                                    <span className="betslip-system__radio-item-help">
+                                        <div onClick={() => this.handleModalOpen(index + 2)}
+                                             className="combinations-btn">{getSystemBetsCount(index + 2, tournamentsCountVal.length - bankersArrayLength)} bets</div>
                                     </span>
                                 </Radio>
                             </li>
                         )}
-                        
                     </ul>
                     <Modal open={this.state.modalOpen} onClose={this.handleModalClose}>
                         <div className="modalWindow">
                             <table className="table">
                                 <thead>
-                                    <tr>
-                                        <th>Combinations</th>
-                                        <th>Odds</th>
-                                    </tr>
+                                <tr>
+                                    <th>Combinations</th>
+                                    <th>Odds</th>
+                                </tr>
                                 </thead>
-                                <ModalSystemRows coefsCalcArr={this.props.coefsCalcArr} systemCombos={this.props.systemCombos} totalSystemCoef={this.props.totalSystemCoef(this.props.coefsCalcArr)} />
+                                <tbody>
+                                {coefsCalcArr.map((value, index) =>
+                                    <tr>
+                                        <td>{(this.state.combos[index]+addLetter).split('').sort().toString().toString().replace(new RegExp(',', 'g'), '')}</td>
+                                        <td>{value}</td>
+                                    </tr>
+                                )}
+                                {(coefsCalcArr.length > 9) ? <tr>
+                                    <td>...</td>
+                                    <td></td>
+                                </tr> : null}
+                                <tr>
+                                    <td>Total:</td>
+                                    <td>
+                                        {totalSystemCoef(coefsCalcArr)}
+                                    </td>
+                                </tr>
+                                </tbody>
                             </table>
                         </div>
                     </Modal>
                 </div>
-            </SystemGroup>
+            </SystemsRadioGroup>
         )
     }
 }
-
 
 const mapStateToProps = (state) => {
     return {

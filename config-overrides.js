@@ -1,33 +1,37 @@
 const { injectBabelPlugin } = require('react-app-rewired');
-const rewireLess = require('react-app-rewire-less');
 
+const rewireSass = require('react-app-rewire-scss');
+
+/* config-overrides.js */
 module.exports = function override(config, env) {
   
   config = injectBabelPlugin(['import', {
     libraryName: 'antd',
     style: "true"
   }], config);
-
-  config = rewireLess.withLoaderOptions({
-    javascriptEnabled: true,
-    modifyVars: {
-      "@font-family": "'Roboto Condensed', Arial, sans-serif",
-      "@primary-color": "#ffbf00",
-      "@btn-primary-color": "#000",
-      "@menu-dark-color": "#fff",
-      "@menu-dark-bg": "#393b50",
-    },
-
-  })(config, env);
-
+  
+ /*  config = injectBabelPlugin(['react-intl', {
+      "messagesDir": "./src/translations/extractedMessages"
+  }], config); */
+  
   config.resolve = {
     modules: ['src' , 'node_modules'],
     extensions: ['.js', '.jsx'],
   };
+    
+  config.entry.push("babel-polyfill");
 
+  config = rewireSass(config, env);
 
+  config.module.rules.push({
+      test: /\.(html)$/,
+      use: {
+          loader: 'html-loader',
+          options: {
+              attrs: [':data-src']
+          }
+      }
+  });
+  
   return config;
 };
-
-
-  /*  https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less */

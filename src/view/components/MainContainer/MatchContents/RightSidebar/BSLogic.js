@@ -1,18 +1,23 @@
 export const getVal = (array, obj, level) => {
-    let result = array.find(e => e.tournament.tournamentId == obj.tournamentId).tournament;
+    let result = array.find(e => parseInt(e.tournament.tournamentId, 10) === parseInt(obj.tournamentId, 10)).tournament;
     if (level >= 1) {
         let matches = result.matchs || result.value;
-        result = matches.find(e => e.matchId == obj.matchId)
-    };
-    if (level >= 2) result = result.hasOwnProperty("groups") ? result.groups.find(e => e.id == obj.groupId) : result;
+        result = matches.find(e => parseInt(e.matchId, 10) === parseInt(obj.matchId, 10))
+    }
+    ;
+    if (level >= 2)
+        result = (result && result.hasOwnProperty("groups")) ? result.groups.find(e => e.id === obj.groupId) : result;
+    // console.log('object :', result.id);
     if (level >= 3) {
         let betdomains = result.betdomains || result.Markets;
-        result = betdomains.find(e => (e.betDomainId || e.id) == obj.betDomainId)
-    };
+        result = betdomains.find(e => (e.betDomainId || e.id) === obj.betDomainId)
+    }
+    ;
     if (level === 4) {
         let odds = result.odds || result.Odds;
-        result = odds.find(e => e.oddId == obj.oddId)
-    };
+        result = odds.find(e => e.oddId === obj.oddId)
+    }
+    ;
     return result;
 }
 
@@ -20,12 +25,14 @@ export const getValLive = (array, obj, level) => {
     let result = array[obj.matchId];
     if (level >= 1) {
         let markets = result.Markets;
-        result = markets.find(e => e.id === obj.betDomainId);
-    };
+        result = markets.find(e => parseInt(e.id, 10) === parseInt(obj.betDomainId, 10));
+    }
+    ;
     if (level >= 2) {
         let markets = result.Odds;
-        result = markets.find(e => e.oddId === obj.oddId);
-    };
+        result = markets.find(e => parseInt(e.oddId, 10) === parseInt(obj.oddId, 10));
+    }
+    ;
     return result;
 }
 
@@ -61,56 +68,76 @@ export const totalSystemCoef = (arr) => ((arr.reduce((a, b) => parseFloat(a) + p
 export const systemTipSize = (tournamentsCount) => ((tournamentsCount).length > 1) ? (tournamentsCount).length - 2 : 0;
 
 export const getBonusAmount = (tipSize, array) => {
-    let result = array[0].response.bonuses.find(e => parseInt(e.tipSize) === (tipSize > array[0].response.bonuses.length - 1 ? array[0].response.bonuses.length - 1 : tipSize));
-    return Number(result.bonus) || 0;
+    let _result;
+    if (array)
+        _result = array.response.bonuses.find((e) => (parseInt(e.tipSize, 10) <= tipSize))
+    if (_result)
+        return Number(_result.bonus)
+    else
+        return 0
 }
 
-export const systemCombinations = (array, length, bankers) => {
+export const systemCombinations = (array, length, bankers, matchObjArray) => {
     let arrayofarray = [];
 
-    if (bankers) length += bankers.length;
-
-    for (let j = 0; j < length; j++) {
-        if (j == 0) {
-            arrayofarray = array.slice(j);
+    function combine(input, len, start) {
+        if (len === 0) {
+            arrayofarray.push(res.join(""))
+            return;
         }
-        else {
-            arrayofarray.map((current, l) => {
-                array.slice(j).map((curr2, k) => {
-                    if (!current.includes(curr2) && current.slice(-1) < curr2) {
-                        arrayofarray.push(current + curr2);
-                    }
-                });
-                arrayofarray = arrayofarray.filter(val => val != current);
-            });
+        for (let i = start; i <= input.length - len; i++) {
+            res[res.length - len] = input[i];
+            combine(input, len - 1, i + 1);
         }
     }
+
+    let res = [];
+    res.length = length;
+
+    if (typeof array !== 'undefined' && typeof arrayofarray !== 'undefined') {
+        combine(array, res.length, 0);
+    }
+
     if (bankers) {
-        length += bankers.length;
+        //length += bankers.length;
+
         arrayofarray = arrayofarray.filter(
             val => {
                 let checkBankers = true;
-                bankers.map(el => { checkBankers = checkBankers && val.includes(el) });
+
+                bankers.map((el) => {
+                    let letterIndex = matchObjArray.findIndex(e => {
+                        return e.OddId === el
+                    });
+                    if (letterIndex != -1) {
+                        checkBankers = checkBankers && !val.includes(array[letterIndex])
+                    } else {
+                        checkBankers = false;
+                    }
+
+                });
                 return checkBankers;
             });
     }
     return arrayofarray.slice(0, 10);
 }
 
-export const tournamentsCount = (TournamentsBets, TournamentsObj) => {
-    // !!! Для Virtual: getVal(TournamentsObj, arr, 4).betdomainId
 
-    let tournamentsCount = [];
-    TournamentsBets.map((arr) => {
-        if (arr.type === "prematch" && TournamentsObj.find(e => e.tournament.tournamentId == arr.tournamentId) && !tournamentsCount.includes(getVal(TournamentsObj, arr, 3).id))
-                tournamentsCount.push(getVal(TournamentsObj, arr, 3).id);
+/*
+let result = [];
+result.length = 4; //n=2
 
-        // if (arr.type === "live" 
-        //     && Object.keys(TournamentsObjLive).some(e => e == arr.matchId) 
-        //     && !tournamentsCount.includes(getValLive(TournamentsObjLive, arr, 1).id)) {
-        //     tournamentsCount.push(getValLive(TournamentsObjLive, arr, 1).id);
-        // }
-    })
-
-    return tournamentsCount;
+function combine(input, len, start) {
+  if(len === 0) {
+    console.log( result.join(" ") ); //process here the result
+    return;
+  }
+  for (var i = start; i <= input.length - len; i++) {
+    result[result.length - len] = input[i];
+    combine(input, len-1, i+1 );
+  }
 }
+
+const array = ["a", "b", "c", "d","e","f","g","h","j","k"];
+combine( array, result.length, 0);
+ */

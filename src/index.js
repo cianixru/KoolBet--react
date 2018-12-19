@@ -6,31 +6,31 @@ import { BrowserRouter } from 'react-router-dom'
 
 import configureStore from './state/reducers/configureStore'
 import Theme from "./config/Theme"
-import './view/fonts/fonts.css'
-import './view/app.css'
+import './view/styles/fonts/fonts.css'
+import './view/styles/template1/styles.scss'
+// import './view/app.scss'
 
-import Header from './view/components/Header/index';
-import MobileToolbar from './view/components/MobileToolbar/index';
-import RouterGrid from './view/components/RouterGrid/index';
+import Header from './view/components/Header';
+import Footer from './view/components/Footer';
+import RouterGrid from './view/components/RouterGrid';
 
+import { IntlProvider } from 'react-intl-redux';
 
 let { store, persistor } = configureStore()
 
 const App = props => (
   <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <BrowserRouter>
-        <Theme>
-          <Header />
-
-            <RouterGrid/>
-
-          {/* MobileToolbar */}
-          <MobileToolbar />
-
-        </Theme>
-      </BrowserRouter>
-    </PersistGate>
+    <IntlProvider textComponent={React.Fragment}>
+      <PersistGate loading={null} persistor={persistor}>
+        <BrowserRouter>
+          <Theme>
+            <Header />
+            <RouterGrid />
+            <Footer />
+          </Theme>
+        </BrowserRouter>
+      </PersistGate>
+    </IntlProvider>
   </Provider>
 );
 

@@ -1,5 +1,5 @@
 let initialState = {
-    streemVideo: true,
+    
 }
 
 export default function vgConfig(state = initialState, action) {

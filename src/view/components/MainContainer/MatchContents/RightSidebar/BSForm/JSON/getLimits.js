@@ -158,9 +158,6 @@
                 "tipSize": "8"
             }, {
                 "bonus": "2.00",
-                "tipSize": "7"
-            }, {
-                "bonus": "2.00",
                 "tipSize": "6"
             }, {
                 "bonus": "2.00",
